@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shuttle Ontang-Anting — Tebing Keraton | Glamping Tahura</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            tahura: {
+              dark: '#15370D',
+              mid: '#728E6D',
+              gold: '#E5CD82',
+              cream: '#F9F7F0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F4F6F2;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tahura-gradient {
+      background: linear-gradient(135deg, #15370D 0%, #3d5e35 50%, #728E6D 100%);
+    }
+    .tahura-hero-gradient {
+      background: linear-gradient(135deg, #15370D 0%, #728E6D 65%, #E5CD82 140%);
+    }
+    .tahura-gold-gradient {
+      background: linear-gradient(135deg, #E5CD82 0%, #d4b459 100%);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #eef2ec; }
+    ::-webkit-scrollbar-thumb { background: #728E6D; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #15370D; }
+
+    /* Loading Shuttle Animation */
+    @keyframes driveBounce {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-3px) rotate(-1deg); }
+      75% { transform: translateY(-2px) rotate(1deg); }
+    }
+    @keyframes roadMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-40px); }
+    }
+    .animate-shuttle {
+      animation: driveBounce 0.7s infinite ease-in-out;
+    }
+    .animate-road {
+      animation: roadMove 0.6s infinite linear;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(110%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast-enter {
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2.5 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- LOADING OVERLAY (REFRESH DATA / SYNCING) -->
+  <!-- ===================================================================== -->
+  <div id="loading-overlay" class="hidden fixed inset-0 z-[90] bg-[#15370D]/75 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-white transition-opacity">
+    <div class="bg-white/10 border border-[#E5CD82]/40 rounded-3xl p-8 max-w-xs w-full text-center shadow-2xl">
+      <div class="relative w-24 h-16 mx-auto mb-3 flex items-center justify-center overflow-hidden">
+        <!-- Ikon Shuttle Ontang-Anting SVG -->
+        <svg class="w-16 h-16 text-[#E5CD82] animate-shuttle" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="20" width="46" height="22" rx="6" fill="currentColor"/>
+          <path d="M12 20L18 11H44L50 20H12Z" fill="#728E6D"/>
+          <rect x="15" y="24" width="9" height="8" rx="1.5" fill="#15370D"/>
+          <rect x="27" y="24" width="9" height="8" rx="1.5" fill="#15370D"/>
+          <rect x="39" y="24" width="10" height="8" rx="1.5" fill="#15370D"/>
+          <circle cx="18" cy="44" r="6" fill="#15370D" stroke="#E5CD82" stroke-width="2.5"/>
+          <circle cx="44" cy="44" r="6" fill="#15370D" stroke="#E5CD82" stroke-width="2.5"/>
+        </svg>
+        <div class="absolute bottom-1 left-0 right-0 flex gap-3 animate-road opacity-60">
+          <span class="h-1 w-6 bg-[#E5CD82] rounded-full"></span>
+          <span class="h-1 w-6 bg-[#E5CD82] rounded-full"></span>
+          <span class="h-1 w-6 bg-[#E5CD82] rounded-full"></span>
+          <span class="h-1 w-6 bg-[#E5CD82] rounded-full"></span>
+        </div>
+      </div>
+      <h3 id="loading-title" class="font-bold text-lg text-[#E5CD82] tracking-wide">Menyinkronkan Data...</h3>
+      <p id="loading-subtitle" class="text-xs text-white/80 mt-1">Menghubungkan ke Database Glamping Tahura</p>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL KONFIRMASI KUSTOM -->
+  <!-- ===================================================================== -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-[85] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-[#728E6D]/30 transform transition-all scale-100">
+      <div class="tahura-gradient px-6 py-4 flex items-center gap-3">
+        <div id="confirm-icon-bg" class="w-10 h-10 rounded-2xl bg-[#E5CD82]/20 border border-[#E5CD82]/50 flex items-center justify-center text-[#E5CD82]">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <h3 id="confirm-title" class="text-white font-bold text-base">Konfirmasi Tindakan</h3>
+          <p class="text-[#E5CD82] text-xs">Shuttle Tebing Keraton</p>
+        </div>
+      </div>
+      <div class="p-6">
+        <p id="confirm-message" class="text-sm text-slate-600 leading-relaxed">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+        <div id="confirm-detail-box" class="hidden mt-3 p-3 rounded-xl bg-[#F4F6F2] border border-[#728E6D]/20 text-xs text-slate-700 space-y-1"></div>
+        <div class="mt-6 flex items-center justify-end gap-3">
+          <button id="confirm-cancel-btn" type="button" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Batal</button>
+          <button id="confirm-ok-btn" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-md transition">Ya, Lanjutkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL EDIT TRIP (KHUSUS ADMIN) -->
+  <!-- ===================================================================== -->
+  <div id="edit-trip-modal" class="hidden fixed inset-0 z-[80] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-[#728E6D]/30 my-8">
+      <div class="tahura-gradient px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 class="text-white font-bold text-lg">Edit Data Trip Tebing Keraton</h3>
+          <p id="edit-trip-id-label" class="text-[#E5CD82] text-xs font-mono">ID: -</p>
+        </div>
+        <button type="button" onclick="closeModal('edit-trip-modal')" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="form-edit-trip" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <input type="hidden" id="edit-trip-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Tanggal Perjalanan</label>
+            <input type="date" id="edit-trip-tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Status Trip</label>
+            <select id="edit-trip-status" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white">
+              <option value="Selesai">Selesai</option>
+              <option value="Berjalan">Berjalan</option>
+              <option value="Booking">Booking</option>
+              <option value="Batal">Batal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Nama Pemesan</label>
+            <input type="text" id="edit-trip-nama" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Nomor WhatsApp</label>
+            <input type="tel" id="edit-trip-wa" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Kategori Wisatawan</label>
+            <select id="edit-trip-wisatawan" onchange="recalcEditTrip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm bg-white">
+              <option value="Domestik">Domestik</option>
+              <option value="Mancanegara">Mancanegara</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Pilih Paket</label>
+            <select id="edit-trip-paket" onchange="recalcEditTrip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm bg-white">
+              <option value="Paket 1">Paket 1</option>
+              <option value="Paket 2">Paket 2</option>
+              <option value="Paket 3">Paket 3</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Sesi Keberangkatan</label>
+            <select id="edit-trip-sesi" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm bg-white">
+              <option value="05:00 - 07:00 WIB">05:00 - 07:00 WIB</option>
+              <option value="08:00 - 10:00 WIB">08:00 - 10:00 WIB</option>
+              <option value="16:00 - 18:00 WIB">16:00 - 18:00 WIB</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Jumlah Orang (Pax)</label>
+            <input type="number" min="1" id="edit-trip-orang" oninput="recalcEditTrip()" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Additional FnB (Rp)</label>
+            <input type="number" min="0" id="edit-trip-fnb" oninput="recalcEditTrip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" placeholder="0" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Additional Lainnya (Rp)</label>
+            <input type="number" min="0" id="edit-trip-add" oninput="recalcEditTrip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#15370D]/5 border border-[#728E6D]/30 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs text-slate-500 block">Harga Paket / Orang</span>
+            <span id="edit-trip-harga-display" class="font-bold text-sm text-[#15370D]">Rp 0</span>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-500 block">Total Harga Akhir</span>
+            <span id="edit-trip-total-display" class="font-extrabold text-lg text-[#15370D]">Rp 0</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" onclick="closeModal('edit-trip-modal')" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Batal</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-md transition">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL EDIT BIAYA (KHUSUS ADMIN) -->
+  <!-- ===================================================================== -->
+  <div id="edit-biaya-modal" class="hidden fixed inset-0 z-[80] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-[#728E6D]/30 my-8">
+      <div class="tahura-gradient px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 class="text-white font-bold text-lg">Edit Data Biaya Operasional</h3>
+          <p id="edit-biaya-id-label" class="text-[#E5CD82] text-xs font-mono">ID: -</p>
+        </div>
+        <button type="button" onclick="closeModal('edit-biaya-modal')" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="form-edit-biaya" class="p-6 space-y-4">
+        <input type="hidden" id="edit-biaya-id" />
+        <input type="hidden" id="edit-biaya-existing-url" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Tanggal Input</label>
+            <input type="date" id="edit-biaya-tanggal" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Kategori Biaya</label>
+            <select id="edit-biaya-kategori" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm bg-white">
+              <option value="BBM/ Bensin">BBM/ Bensin</option>
+              <option value="Parkir">Parkir</option>
+              <option value="Konsumsi">Konsumsi</option>
+              <option value="Perawatan/ Servis">Perawatan/ Servis</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Jumlah</label>
+            <input type="number" step="0.01" min="0.1" id="edit-biaya-jumlah" oninput="recalcEditBiaya()" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Satuan</label>
+            <select id="edit-biaya-satuan" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm bg-white">
+              <option value="Liter">Liter</option>
+              <option value="Kali">Kali</option>
+              <option value="Pax">Pax</option>
+              <option value="Unit">Unit</option>
+              <option value="Paket">Paket</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Harga Satuan (Rp)</label>
+            <input type="number" min="0" id="edit-biaya-harga" oninput="recalcEditBiaya()" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Ganti Bukti Transaksi (Opsional)</label>
+            <input type="file" id="edit-biaya-file" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#15370D] file:text-[#E5CD82] hover:file:brightness-110 cursor-pointer border border-slate-200 rounded-xl p-1.5" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-[#15370D] mb-1">Keterangan</label>
+            <textarea id="edit-biaya-keterangan" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#15370D] outline-none text-sm"></textarea>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-[#15370D]/5 border border-[#728E6D]/30 flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-600">Total Jumlah Harga</span>
+          <span id="edit-biaya-total-display" class="font-extrabold text-lg text-[#15370D]">Rp 0</span>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" onclick="closeModal('edit-biaya-modal')" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Batal</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-md transition">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- HALAMAN LOGIN -->
+  <!-- ===================================================================== -->
+  <section id="login-screen" class="min-h-screen tahura-hero-gradient flex items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-[#E5CD82]/50">
+      <div class="tahura-gradient px-8 pt-8 pb-7 text-center relative overflow-hidden">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white border border-[#E5CD82]/50 flex items-center justify-center overflow-hidden shadow-inner p-1">
+        <img src="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa" alt="Logo Glamping Tahura" class="w-full h-full object-contain" />
+        </div>
+        <span class="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#E5CD82] text-[#15370D] mb-2">Glamping Tahura</span>
+        <h1 class="text-white font-extrabold text-2xl tracking-tight">Shuttle Ontang-Anting</h1>
+        <p class="text-white/80 text-xs mt-1">Sistem Operasional Trip Tebing Keraton</p>
+      </div>
+
+      <form id="login-form" class="p-8 space-y-5">
+        <div>
+          <label class="block text-xs font-bold text-[#15370D] uppercase tracking-wider mb-1.5">Username</label>
+          <input type="text" id="login-username" required autocomplete="username" placeholder="Masukkan username..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm transition" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-[#15370D] uppercase tracking-wider mb-1.5">Password</label>
+          <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm transition" />
+        </div>
+        <button type="submit" class="w-full py-3.5 rounded-xl font-extrabold text-sm text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-lg shadow-[#15370D]/20 transition transform active:scale-[0.99]">
+          Masuk
+        </button>
+
+        <div class="pt-3 border-t border-slate-100 text-center">
+          <p class="text-[11px] text-slate-400">Gunakan akun Driver atau Admin yang telah terdaftar</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APLIKASI UTAMA (SETELAH LOGIN) -->
+  <!-- ===================================================================== -->
+  <div id="app-screen" class="hidden flex-1 flex flex-col">
+
+    <!-- NAVBAR HEADER -->
+    <header class="tahura-gradient text-white sticky top-0 z-40 shadow-lg border-b border-[#E5CD82]/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-md shrink-0 border border-[#E5CD82]/40">
+            <img src="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa" alt="Logo" class="w-full h-full object-contain p-0.5" />
+            </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none">Shuttle Tebing Keraton</h1>
+              <span id="role-badge" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-[#E5CD82] text-[#15370D]">USER</span>
+            </div>
+            <p class="text-[11px] text-white/75 mt-0.5">CV Tahura Group</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Indikator Status Sync Optimistic UI -->
+          <span id="sync-status-pill" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-[#E5CD82] border border-[#E5CD82]/30">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Tersinkron
+          </span>
+
+          <!-- Tombol Refresh Data (Admin) -->
+          <button id="btn-refresh-data" type="button" onclick="fetchAllData(true)" title="Refresh Data" class="hidden p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#E5CD82] transition active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+
+          <!-- Tombol Logout -->
+          <button type="button" onclick="handleLogout()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-300/30 text-white text-xs font-bold transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <span class="hidden sm:inline">Keluar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <div class="bg-[#15370D]/60 border-t border-white/10">
+        <div id="nav-tabs" class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1.5 overflow-x-auto py-2 no-scrollbar">
+          <!-- Tab akan di-render dinamis sesuai Role -->
+        </div>
+      </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+      <!-- ================================================================= -->
+      <!-- VIEW 1: INPUT TRIP TEBING KERATON (DRIVER & ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-input-trip" class="hidden max-w-2xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-xl border border-[#728E6D]/25 overflow-hidden">
+          <div class="tahura-hero-gradient px-6 py-5 text-white">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#E5CD82]">Form Operasional Driver</span>
+            <h2 class="text-xl font-extrabold mt-0.5">Input Trip Tebing Keraton</h2>
+            <p class="text-xs text-white/85 mt-1">Isi data penumpang shuttle ontang-anting. Status otomatis tercatat <strong>Selesai</strong>.</p>
+          </div>
+
+          <form id="form-input-trip" class="p-6 space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Tanggal Perjalanan <span class="text-red-500">*</span></label>
+                <input type="date" id="trip-tanggal" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-slate-50/50" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Sesi Keberangkatan <span class="text-red-500">*</span></label>
+                <select id="trip-sesi" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white">
+                  <option value="05:00 - 07:00 WIB">05:00 - 07:00 WIB</option>
+                  <option value="08:00 - 10:00 WIB">08:00 - 10:00 WIB</option>
+                  <option value="16:00 - 18:00 WIB">16:00 - 18:00 WIB</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Nama Pemesan <span class="text-red-500">*</span></label>
+                <input type="text" id="trip-nama" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Nomor WhatsApp <span class="text-red-500">*</span></label>
+                <input type="tel" id="trip-wa" required placeholder="Contoh: 081234567890" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Kategori Wisatawan <span class="text-red-500">*</span></label>
+                <select id="trip-wisatawan" onchange="updateTripPricePreview()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white font-semibold text-[#15370D]">
+                  <option value="Domestik" selected>Domestik</option>
+                  <option value="Mancanegara">Mancanegara</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Pilih Paket Trip <span class="text-red-500">*</span></label>
+                <select id="trip-paket" onchange="updateTripPricePreview()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white font-semibold text-[#15370D]">
+                  <option value="Paket 1">Paket 1</option>
+                  <option value="Paket 2">Paket 2</option>
+                  <option value="Paket 3">Paket 3</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Jumlah Orang (Pax) <span class="text-red-500">*</span></label>
+                <input type="number" id="trip-orang" min="1" value="1" oninput="updateTripPricePreview()" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-base font-bold text-[#15370D]" />
+              </div>
+            </div>
+
+            <!-- KARTU RINGKASAN HARGA OTOMATIS -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#15370D] to-[#2c5223] text-white shadow-inner flex items-center justify-between">
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-[#E5CD82] font-bold">Tarif Per Orang</p>
+                <p id="preview-harga-paket" class="text-base font-bold mt-0.5">Rp 175.000</p>
+                <p id="preview-tarif-label" class="text-[11px] text-white/70">Domestik • Paket 1</p>
+              </div>
+              <div class="text-right">
+                <p class="text-[11px] uppercase tracking-wider text-[#E5CD82] font-bold">Total Pembayaran</p>
+                <p id="preview-total-harga" class="text-2xl font-extrabold text-[#E5CD82] mt-0.5">Rp 175.000</p>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-4 rounded-2xl font-extrabold text-sm text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-lg shadow-[#15370D]/20 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg>
+              Simpan Data
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 2: INPUT BIAYA TRIP TEBING KERATON (DRIVER & ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-input-biaya" class="hidden max-w-2xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-xl border border-[#728E6D]/25 overflow-hidden">
+          <div class="tahura-hero-gradient px-6 py-5 text-white">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#E5CD82]">Form Pengeluaran Operasional</span>
+            <h2 class="text-xl font-extrabold mt-0.5">Input Biaya Trip Tebing Keraton</h2>
+            <p class="text-xs text-white/85 mt-1">Catat pengeluaran operasional shuttle dan unggah foto bukti transaksi ke Google Drive.</p>
+          </div>
+
+          <form id="form-input-biaya" class="p-6 space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Tanggal Input <span class="text-red-500">*</span></label>
+                <input type="date" id="biaya-tanggal" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-slate-50/50" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Kategori Biaya <span class="text-red-500">*</span></label>
+                <select id="biaya-kategori" onchange="autoSelectSatuanBiaya()" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white font-semibold text-[#15370D]">
+                  <option value="BBM/ Bensin">BBM/ Bensin</option>
+                  <option value="Parkir">Parkir</option>
+                  <option value="Konsumsi">Konsumsi</option>
+                  <option value="Perawatan/ Servis">Perawatan/ Servis</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Jumlah / Qty <span class="text-red-500">*</span></label>
+                <input type="number" step="0.01" min="0.1" id="biaya-jumlah" value="1" oninput="updateBiayaPreview()" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm font-bold" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Satuan <span class="text-red-500">*</span></label>
+                <select id="biaya-satuan" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm bg-white">
+                  <option value="Liter">Liter</option>
+                  <option value="Kali">Kali</option>
+                  <option value="Pax">Pax</option>
+                  <option value="Unit">Unit</option>
+                  <option value="Paket">Paket</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Harga Satuan (Rp) <span class="text-red-500">*</span></label>
+                <input type="number" min="0" id="biaya-harga" placeholder="Contoh: 10000" oninput="updateBiayaPreview()" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-base font-bold text-[#15370D]" />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Upload Bukti Transaksi (Foto Struk / Nota)</label>
+                <div class="border-2 border-dashed border-[#728E6D]/50 rounded-2xl p-4 bg-[#F4F6F2]/60 text-center">
+                  <input type="file" id="biaya-file" accept="image/*" onchange="previewBuktiFile(event)" class="hidden" />
+                  <label for="biaya-file" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#15370D] text-[#E5CD82] text-xs font-bold hover:brightness-110 transition shadow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Ambil Foto / Pilih File Struk
+                  </label>
+                  <p id="biaya-file-name" class="text-xs text-slate-500 mt-2">Belum ada file dipilih (Otomatis tersimpan ke Google Drive)</p>
+                  <img id="biaya-file-preview" class="hidden max-h-40 mx-auto mt-3 rounded-xl shadow border border-slate-200 object-contain" />
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-[#15370D] mb-1.5">Keterangan</label>
+                <textarea id="biaya-keterangan" rows="2" placeholder="Catatan tambahan (misal: Isi Pertalite di SPBU Dago)..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm"></textarea>
+              </div>
+            </div>
+
+            <!-- TOTAL BIAYA PREVIEW -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#15370D] to-[#2c5223] text-white flex items-center justify-between">
+              <div>
+                <p class="text-[11px] uppercase tracking-wider text-[#E5CD82] font-bold">Total Pengeluaran</p>
+                <p class="text-xs text-white/75">Jumlah × Harga Satuan</p>
+              </div>
+              <p id="preview-biaya-total" class="text-2xl font-extrabold text-[#E5CD82]">Rp 0</p>
+            </div>
+
+            <button type="submit" class="w-full py-4 rounded-2xl font-extrabold text-sm text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-lg shadow-[#15370D]/20 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg>
+              Simpan Data Biaya
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 3: REKAP / LAPORAN DASHBOARD (KHUSUS ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-admin-laporan" class="hidden space-y-6">
+        <!-- Filter Bar -->
+        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Analitik & Keuangan</span>
+            <h2 class="text-xl font-extrabold text-[#15370D]">Rekapitulasi Shuttle Tebing Keraton</h2>
+          </div>
+          <div class="flex flex-wrap items-end gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-1">Dari Tanggal</label>
+              <input type="date" id="filter-start-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-1">Sampai Tanggal</label>
+              <input type="date" id="filter-end-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
+            </div>
+            <button type="button" onclick="resetDateFilter()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F4F6F2] text-[#15370D] hover:bg-[#728E6D]/20 border border-[#728E6D]/30 transition">
+              Reset Semua
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Total Pendapatan -->
+          <div class="tahura-gradient rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#E5CD82]">Total Pendapatan</span>
+              <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-[#E5CD82]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+            </div>
+            <p id="kpi-pendapatan" class="text-2xl font-extrabold mt-3 text-white">Rp 0</p>
+            <p id="kpi-pendapatan-sub" class="text-[11px] text-white/75 mt-1">Termasuk Additional & FnB</p>
+          </div>
+
+          <!-- Card 2: Total Biaya Operasional -->
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Biaya Operasional</span>
+              <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+              </div>
+            </div>
+            <p id="kpi-biaya" class="text-2xl font-extrabold mt-3 text-slate-800">Rp 0</p>
+            <p id="kpi-biaya-sub" class="text-[11px] text-slate-500 mt-1">0 transaksi pengeluaran</p>
+          </div>
+
+          <!-- Card 3: Laba Bersih -->
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-[#E5CD82]">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#15370D]">Laba Bersih (Profit)</span>
+              <div class="w-9 h-9 rounded-xl bg-[#E5CD82]/30 flex items-center justify-center text-[#15370D]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+              </div>
+            </div>
+            <p id="kpi-profit" class="text-2xl font-extrabold mt-3 text-[#15370D]">Rp 0</p>
+            <p id="kpi-margin" class="text-[11px] font-semibold text-[#728E6D] mt-1">Margin: 0%</p>
+          </div>
+
+          <!-- Card 4: Total Trip & Penumpang -->
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Trip & Penumpang</span>
+              <div class="w-9 h-9 rounded-xl bg-[#728E6D]/15 flex items-center justify-center text-[#15370D]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-2 mt-3">
+              <p id="kpi-trip" class="text-2xl font-extrabold text-[#15370D]">0 Trip</p>
+              <span class="text-slate-300">|</span>
+              <p id="kpi-pax" class="text-lg font-bold text-[#728E6D]">0 Pax</p>
+            </div>
+            <p id="kpi-wisatawan-split" class="text-[11px] text-slate-500 mt-1">Domestik: 0 • Mancanegara: 0</p>
+          </div>
+        </div>
+
+        <!-- CHARTS GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Grafik 1: Pendapatan vs Biaya -->
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20">
+            <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Tren Pendapatan vs Biaya Operasional</h3>
+            <p class="text-xs text-slate-500 mb-4">Perbandingan pemasukan trip dan pengeluaran harian</p>
+            <div class="h-64">
+              <canvas id="chart-revenue-expense"></canvas>
+            </div>
+          </div>
+
+          <!-- Grafik 2: Distribusi Paket / Kategori Biaya -->
+          <div class="bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20 flex flex-col justify-between">
+            <div>
+              <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Komposisi Pengeluaran</h3>
+              <p class="text-xs text-slate-500 mb-4">Berdasarkan kategori biaya shuttle</p>
+              <div class="h-52 flex items-center justify-center">
+                <canvas id="chart-expense-category"></canvas>
+              </div>
+            </div>
+            <div id="paket-summary-pills" class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5 text-[11px]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 4: KELOLA DATA TRIP (KHUSUS ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-admin-trip" class="hidden space-y-4">
+        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-[#15370D]">Database Trip Tebing Keraton</h2>
+            <p class="text-xs text-slate-500">Kelola data pemesanan, edit Additional/FnB, atau hapus entri.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="search-trip" oninput="renderTripTable()" placeholder="Cari nama / paket / ID..." class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:border-[#15370D] w-full sm:w-64" />
+            <button type="button" onclick="switchTab('input-trip')" class="px-4 py-2.5 rounded-xl text-xs font-extrabold text-[#15370D] tahura-gold-gradient shrink-0 shadow">+ Trip</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-md border border-[#728E6D]/20 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="tahura-gradient text-white uppercase tracking-wider text-[11px]">
+                  <th class="py-3.5 px-4">ID & Tgl Trip</th>
+                  <th class="py-3.5 px-4">Pemesan & WA</th>
+                  <th class="py-3.5 px-4">Paket & Sesi</th>
+                  <th class="py-3.5 px-4 text-center">Pax</th>
+                  <th class="py-3.5 px-4 text-right">Additional</th>
+                  <th class="py-3.5 px-4 text-right">Total Harga</th>
+                  <th class="py-3.5 px-4 text-center">Status</th>
+                  <th class="py-3.5 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-trip" class="divide-y divide-slate-100">
+                <tr><td colspan="8" class="py-8 text-center text-slate-400">Memuat data trip...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 5: KELOLA DATA BIAYA (KHUSUS ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-admin-biaya" class="hidden space-y-4">
+        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-[#15370D]">Database Biaya Trip Tebing Keraton</h2>
+            <p class="text-xs text-slate-500">Verifikasi bukti struk transaksi Google Drive, edit, atau hapus biaya.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="search-biaya" oninput="renderBiayaTable()" placeholder="Cari kategori / keterangan..." class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:border-[#15370D] w-full sm:w-64" />
+            <button type="button" onclick="switchTab('input-biaya')" class="px-4 py-2.5 rounded-xl text-xs font-extrabold text-[#15370D] tahura-gold-gradient shrink-0 shadow">+ Biaya</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-md border border-[#728E6D]/20 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="tahura-gradient text-white uppercase tracking-wider text-[11px]">
+                  <th class="py-3.5 px-4">ID & Tanggal</th>
+                  <th class="py-3.5 px-4">Kategori</th>
+                  <th class="py-3.5 px-4">Qty & Satuan</th>
+                  <th class="py-3.5 px-4 text-right">Harga Satuan</th>
+                  <th class="py-3.5 px-4 text-right">Jumlah Harga</th>
+                  <th class="py-3.5 px-4 text-center">Bukti</th>
+                  <th class="py-3.5 px-4">Keterangan</th>
+                  <th class="py-3.5 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-biaya" class="divide-y divide-slate-100">
+                <tr><td colspan="8" class="py-8 text-center text-slate-400">Memuat data biaya...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW: KALENDER TRIP (DRIVER & ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-kalender" class="hidden space-y-5">
+        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Jadwal & Reservasi</span>
+            <h2 class="text-xl font-extrabold text-[#15370D]">Kalender Trip Tebing Keraton</h2>
+            <p class="text-xs text-slate-500">Menampilkan jadwal trip 2 bulan sekaligus. Klik pada tanggal ber-badge untuk melihat rincian.</p>
+          </div>
+          <!-- Kontrol Paginasi Bulan -->
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="changeCalendarMonth(-1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+              Bulan Sebelumnya
+            </button>
+            <button type="button" onclick="resetCalendarMonth()" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              Bulan Ini
+            </button>
+            <button type="button" onclick="changeCalendarMonth(1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+              Bulan Berikutnya
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Wadah Grid 2 Bulan Kalender -->
+        <div id="calendar-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Render dinamis via JavaScript -->
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ===================================================================== -->
+  <!-- MODAL DETAIL TRIP (KALENDER) -->
+  <!-- ===================================================================== -->
+  <div id="trip-detail-modal" class="hidden fixed inset-0 z-[80] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-[#728E6D]/30">
+      <div class="tahura-gradient px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 class="text-white font-bold text-base">Rincian Reservasi Trip</h3>
+          <p id="modal-trip-id" class="text-[#E5CD82] text-xs font-mono">ID: -</p>
+        </div>
+        <button type="button" onclick="closeModal('trip-detail-modal')" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="space-y-2.5 text-xs text-slate-700 bg-[#F4F6F2] p-4 rounded-2xl border border-[#728E6D]/20">
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Tanggal Perjalanan</span>
+            <span id="modal-trip-tgl" class="font-bold text-[#15370D]">-</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Nama Pemesan</span>
+            <span id="modal-trip-nama" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Nomor WhatsApp</span>
+            <span id="modal-trip-wa" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Paket & Wisatawan</span>
+            <span id="modal-trip-paket" class="font-bold text-[#15370D]">-</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Sesi Keberangkatan</span>
+            <span id="modal-trip-sesi" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200/60 pb-2">
+            <span class="text-slate-500 font-medium">Jumlah Penumpang</span>
+            <span id="modal-trip-pax" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between pt-1">
+            <span class="text-slate-500 font-medium">Total Harga</span>
+            <span id="modal-trip-total" class="font-extrabold text-sm text-[#15370D]">-</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+          <button type="button" onclick="closeModal('trip-detail-modal')" class="px-5 py-2.5 rounded-xl text-xs font-bold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow transition">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer class="py-4 text-center text-[11px] text-slate-400 border-t border-slate-200/70 bg-white/50">
+      Shuttle Ontang-Anting Tebing Keraton • Glamping Tahura Bandung
+    </footer>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT LOGIC -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. KONFIGURASI APLIKASI (UBAH URL APPS SCRIPT & AKUN DI SINI)
+    // =========================================================================
+    const CONFIG = {
+      // TEMPELKAN URL WEB APP GOOGLE APPS SCRIPT (/exec) ANDA DI BAWAH INI:
+      WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyhpx7PN5SbqgZZfkO5vgMYLgR34ynjGtCMh3fwXky2iKAKlGkkMBfH552AfBtGhco1Lg/exec',
+
+      // DAFTAR AKUN LOGIN (BISA DITAMBAH ATAU DIUBAH SEWAKTU-WAKTU):
+      USERS: [
+        { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin Tahura' },
+        { username: 'driver', password: 'driver123', role: 'user', name: 'Driver Ontang-Anting' }
+      ],
+
+      // MATRIKS HARGA PAKET BERDASARKAN WISATAWAN:
+      PRICING: {
+        'Domestik': {
+          'Paket 1': 175000,
+          'Paket 2': 150000,
+          'Paket 3': 80000
+        },
+        'Mancanegara': {
+          'Paket 1': 215000,
+          'Paket 2': 190000,
+          'Paket 3': 120000
+        }
+      }
+    };
+
+    // STATE GLOBAL
+    let currentUser = null;
+    let appData = { trips: [], biaya: [] };
+    let chartRevExp = null;
+    let chartExpCat = null;
+
+    // =========================================================================
+    // 2. INISIALISASI HALAMAN
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set default tanggal hari ini pada form
+      const todayISO = new Date().toISOString().split('T')[0];
+      document.getElementById('trip-tanggal').value = todayISO;
+      document.getElementById('biaya-tanggal').value = todayISO;
+
+      updateTripPricePreview();
+      updateBiayaPreview();
+
+      // Cek sesi login tersimpan
+      const savedUser = sessionStorage.getItem('tahura_shuttle_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        initAppSession();
+      }
+    });
+
+    // =========================================================================
+    // 3. SISTEM LOGIN & ROLE MANAGEMENT
+    // =========================================================================
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value.trim();
+
+      const found = CONFIG.USERS.find(acc => acc.username === u && acc.password === p);
+      if (!found) {
+        showToast('Username atau password salah!', 'error');
+        return;
+      }
+
+      currentUser = found;
+      sessionStorage.setItem('tahura_shuttle_user', JSON.stringify(found));
+      showToast(`Selamat datang, ${found.name}!`, 'success');
+      initAppSession();
+    });
+
+    function handleLogout() {
+      showConfirmModal({
+        title: 'Keluar dari Aplikasi',
+        message: 'Apakah Anda yakin ingin keluar dari sesi saat ini?',
+        onConfirm: () => {
+          sessionStorage.removeItem('tahura_shuttle_user');
+          currentUser = null;
+          document.getElementById('app-screen').classList.add('hidden');
+          document.getElementById('login-screen').classList.remove('hidden');
+          document.getElementById('login-form').reset();
+          showToast('Anda telah berhasil keluar.', 'info');
+        }
+      });
+    }
+
+    function initAppSession() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+
+      const badge = document.getElementById('role-badge');
+      badge.textContent = currentUser.role === 'admin' ? 'ADMIN' : 'DRIVER';
+
+      const navContainer = document.getElementById('nav-tabs');
+      navContainer.innerHTML = '';
+
+      if (currentUser.role === 'admin') {
+        document.getElementById('btn-refresh-data').classList.remove('hidden');
+        const adminTabs = [
+          { id: 'admin-laporan', label: '📊 Rekap & Laporan' },
+          { id: 'kalender', label: '📅 Kalender' },
+          { id: 'admin-trip', label: '🚐 Data Trip' },
+          { id: 'admin-biaya', label: '🧾 Data Biaya' },
+          { id: 'input-trip', label: '➕ Input Trip' },
+          { id: 'input-biaya', label: '➕ Input Biaya' }
+        ];
+        adminTabs.forEach(t => {
+          navContainer.innerHTML += `
+            <button data-tab="${t.id}" onclick="switchTab('${t.id}')" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition text-white/80 hover:text-white hover:bg-white/10">
+              ${t.label}
+            </button>
+          `;
+        });
+        switchTab('admin-laporan');
+        fetchAllData(true);
+      } else {
+        document.getElementById('btn-refresh-data').classList.add('hidden');
+        const userTabs = [
+        { id: 'kalender', label: '📅 Kalender' }, // <-- Tambahkan ini juga untuk driver
+        { id: 'input-trip', label: '🚐 Input Trip Tebing Keraton' },
+        { id: 'input-biaya', label: '🧾 Input Biaya Trip' }
+        ];
+        userTabs.forEach(t => {
+          navContainer.innerHTML += `
+            <button data-tab="${t.id}" onclick="switchTab('${t.id}')" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition text-white/80 hover:text-white hover:bg-white/10">
+              ${t.label}
+            </button>
+          `;
+        });
+        switchTab('input-trip');
+      }
+    }
+
+    function switchTab(tabId) {
+      const views = ['input-trip', 'input-biaya', 'admin-laporan', 'kalender', 'admin-trip', 'admin-biaya'];
+      views.forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add('bg-[#E5CD82]', 'text-[#15370D]', 'shadow');
+          btn.classList.remove('text-white/80', 'hover:bg-white/10');
+        } else {
+          btn.classList.remove('bg-[#E5CD82]', 'text-[#15370D]', 'shadow');
+          btn.classList.add('text-white/80', 'hover:bg-white/10');
+        }
+      });
+
+      if (tabId === 'admin-laporan') renderAdminDashboard();
+      if (tabId === 'admin-trip') renderTripTable();
+      if (tabId === 'admin-biaya') renderBiayaTable();
+      if (tabId === 'kalender') renderCalendarView();
+    }
+
+    // =========================================================================
+    // 4. KALKULASI HARGA OTOMATIS & PREVIEW FORM
+    // =========================================================================
+    function updateTripPricePreview() {
+      const wisatawan = document.getElementById('trip-wisatawan').value;
+      const paket = document.getElementById('trip-paket').value;
+      const orang = Math.max(1, parseInt(document.getElementById('trip-orang').value) || 1);
+
+      const hargaSatuan = CONFIG.PRICING[wisatawan]?.[paket] || 0;
+      const total = hargaSatuan * orang;
+
+      document.getElementById('preview-harga-paket').textContent = formatRupiah(hargaSatuan);
+      document.getElementById('preview-tarif-label').textContent = `${wisatawan} • ${paket}`;
+      document.getElementById('preview-total-harga').textContent = formatRupiah(total);
+    }
+
+    function autoSelectSatuanBiaya() {
+      const kat = document.getElementById('biaya-kategori').value;
+      const satuanEl = document.getElementById('biaya-satuan');
+      if (kat === 'BBM/ Bensin') satuanEl.value = 'Liter';
+      else if (kat === 'Parkir') satuanEl.value = 'Kali';
+      else if (kat === 'Konsumsi') satuanEl.value = 'Pax';
+      else if (kat === 'Perawatan/ Servis') satuanEl.value = 'Unit';
+      else satuanEl.value = 'Paket';
+    }
+
+    function updateBiayaPreview() {
+      const jumlah = parseFloat(document.getElementById('biaya-jumlah').value) || 0;
+      const harga = parseFloat(document.getElementById('biaya-harga').value) || 0;
+      document.getElementById('preview-biaya-total').textContent = formatRupiah(jumlah * harga);
+    }
+
+    let selectedBiayaFile = null;
+    function previewBuktiFile(event) {
+      const file = event.target.files[0];
+      const nameEl = document.getElementById('biaya-file-name');
+      const imgEl = document.getElementById('biaya-file-preview');
+
+      if (!file) {
+        selectedBiayaFile = null;
+        nameEl.textContent = 'Belum ada file dipilih';
+        imgEl.classList.add('hidden');
+        return;
+      }
+
+      nameEl.textContent = `File siap upload: ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedBiayaFile = {
+          base64: e.target.result,
+          name: file.name,
+          mimeType: file.type
+        };
+        imgEl.src = e.target.result;
+        imgEl.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // =========================================================================
+    // 5. KOMUNIKASI API GOOGLE SHEETS + OPTIMISTIC UI
+    // =========================================================================
+    function setSyncIndicator(state) {
+      const pill = document.getElementById('sync-status-pill');
+      if (!pill) return;
+      if (state === 'syncing') {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Menyimpan ke Sheets...`;
+      } else if (state === 'error') {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-400"></span> Gagal Sinkron`;
+      } else {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Tersinkron`;
+      }
+    }
+
+    async function callApi(action, data = null, id = null) {
+      if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.includes('PASTE_URL')) {
+        throw new Error('URL Google Apps Script belum diisi pada CONFIG.WEB_APP_URL!');
+      }
+
+      const response = await fetch(CONFIG.WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, data, id })
+      });
+
+      const resJson = await response.json();
+      if (resJson.status !== 'success') {
+        throw new Error(resJson.message || 'Terjadi kesalahan pada server');
+      }
+      return resJson.data;
+    }
+
+    async function fetchAllData(showLoader = false) {
+      if (showLoader) showLoading('Memuat Data Terbaru...');
+      setSyncIndicator('syncing');
+      try {
+        const result = await callApi('getAllData');
+        appData.trips = result.trips || [];
+        appData.biaya = result.biaya || [];
+        setSyncIndicator('synced');
+
+        if (currentUser?.role === 'admin') {
+          renderAdminDashboard();
+          renderTripTable();
+          renderBiayaTable();
+        }
+      } catch (err) {
+        setSyncIndicator('error');
+        showToast(err.message, 'error');
+      } finally {
+        if (showLoader) hideLoading();
+      }
+    }
+
+    // =========================================================================
+    // 6. SUBMIT FORM TRIP (OPTIMISTIC UI + KONFIRMASI MODAL)
+    // =========================================================================
+    document.getElementById('form-input-trip').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const wisatawan = document.getElementById('trip-wisatawan').value;
+      const paket = document.getElementById('trip-paket').value;
+      const orang = parseInt(document.getElementById('trip-orang').value) || 1;
+      const hargaPaket = CONFIG.PRICING[wisatawan][paket];
+      const totalHarga = hargaPaket * orang;
+
+      const tripPayload = {
+        Paket_ID: 'TRP-' + Date.now().toString().slice(-6),
+        Tanggal_Perjalanan: document.getElementById('trip-tanggal').value,
+        Nama_Pemesan: document.getElementById('trip-nama').value.trim(),
+        Nomor_Whatsapp: document.getElementById('trip-wa').value.trim(),
+        Wisatawan: wisatawan,
+        Paket: paket,
+        Sesi: document.getElementById('trip-sesi').value,
+        Jumlah_Orang: orang,
+        Additional_FnB: 0,
+        Additional: 0,
+        Harga_Paket: hargaPaket,
+        Total_Harga: totalHarga,
+        Status: 'Selesai'
+      };
+
+      showConfirmModal({
+        title: 'Simpan Data Trip?',
+        message: 'Pastikan data penumpang dan paket perjalanan sudah sesuai sebelum dikirim.',
+        detailHtml: `
+          <div><strong>Pemesan:</strong> ${tripPayload.Nama_Pemesan} (${tripPayload.Jumlah_Orang} Orang)</div>
+          <div><strong>Paket:</strong> ${tripPayload.Paket} (${tripPayload.Wisatawan}) • ${tripPayload.Sesi}</div>
+          <div><strong>Total Harga:</strong> <span class="text-[#15370D] font-bold">${formatRupiah(totalHarga)}</span></div>
+        `,
+        onConfirm: async () => {
+          // 1. OPTIMISTIC UI: Langsung reset form, tampilkan toast sukses & masukkan ke state lokal
+          const optimisticItem = {
+            ...tripPayload,
+            Tanggal_Pesanan: 'Baru saja',
+            Tanggal_Perjalanan: formatISOToIndo(tripPayload.Tanggal_Perjalanan)
+          };
+          appData.trips.unshift(optimisticItem);
+          if (currentUser.role === 'admin') {
+            renderTripTable();
+            renderAdminDashboard();
+          }
+
+          document.getElementById('trip-nama').value = '';
+          document.getElementById('trip-wa').value = '';
+          document.getElementById('trip-orang').value = '1';
+          document.getElementById('trip-wisatawan').value = 'Domestik';
+          updateTripPricePreview();
+
+          showToast('Data Trip berhasil dicatat! Menyinkronkan ke Sheets...', 'success');
+          setSyncIndicator('syncing');
+
+          // 2. KIRIM KE GOOGLE SHEETS DI LATAR BELAKANG
+          try {
+            const saved = await callApi('addTrip', tripPayload);
+            const idx = appData.trips.findIndex(x => x.Paket_ID === tripPayload.Paket_ID);
+            if (idx !== -1) appData.trips[idx] = saved;
+            setSyncIndicator('synced');
+            if (currentUser.role === 'admin') {
+              renderTripTable();
+              renderAdminDashboard();
+            }
+          } catch (err) {
+            // Rollback Optimistic UI jika gagal
+            appData.trips = appData.trips.filter(x => x.Paket_ID !== tripPayload.Paket_ID);
+            setSyncIndicator('error');
+            showToast('Gagal menyimpan ke Google Sheets: ' + err.message, 'error');
+            if (currentUser.role === 'admin') {
+              renderTripTable();
+              renderAdminDashboard();
+            }
+          }
+        }
+      });
+    });
+
+    // =========================================================================
+    // 7. SUBMIT FORM BIAYA + UPLOAD GOOGLE DRIVE (OPTIMISTIC UI)
+    // =========================================================================
+    document.getElementById('form-input-biaya').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const jumlah = parseFloat(document.getElementById('biaya-jumlah').value) || 0;
+      const hargaSatuan = parseFloat(document.getElementById('biaya-harga').value) || 0;
+      const totalBiaya = jumlah * hargaSatuan;
+
+      const biayaPayload = {
+        Biaya_ID: 'BYA-' + Date.now().toString().slice(-6),
+        Tanggal_Input: document.getElementById('biaya-tanggal').value,
+        Kategori_Biaya: document.getElementById('biaya-kategori').value,
+        Jumlah: jumlah,
+        Satuan: document.getElementById('biaya-satuan').value,
+        Harga_Satuan: hargaSatuan,
+        Jumlah_Harga: totalBiaya,
+        Keterangan: document.getElementById('biaya-keterangan').value.trim(),
+        fileBase64: selectedBiayaFile ? selectedBiayaFile.base64 : null,
+        fileName: selectedBiayaFile ? selectedBiayaFile.name : null,
+        fileMimeType: selectedBiayaFile ? selectedBiayaFile.mimeType : null
+      };
+
+      showConfirmModal({
+        title: 'Simpan Pengeluaran Biaya?',
+        message: 'Data biaya akan disimpan ke Google Sheets dan foto bukti diunggah ke Google Drive.',
+        detailHtml: `
+          <div><strong>Kategori:</strong> ${biayaPayload.Kategori_Biaya} (${biayaPayload.Jumlah} ${biayaPayload.Satuan})</div>
+          <div><strong>Total Biaya:</strong> <span class="text-[#15370D] font-bold">${formatRupiah(totalBiaya)}</span></div>
+          <div><strong>Bukti Foto:</strong> ${selectedBiayaFile ? selectedBiayaFile.name : 'Tidak ada lampiran'}</div>
+        `,
+        onConfirm: async () => {
+          // 1. OPTIMISTIC UI
+          const optimisticItem = {
+            ...biayaPayload,
+            Tanggal_Input: formatISOToIndo(biayaPayload.Tanggal_Input),
+            Upload_Bukti_Transaksi: selectedBiayaFile ? 'uploading' : '',
+            Timestamp: 'Baru saja'
+          };
+          appData.biaya.unshift(optimisticItem);
+          if (currentUser.role === 'admin') {
+            renderBiayaTable();
+            renderAdminDashboard();
+          }
+
+          // Reset Form
+          document.getElementById('biaya-jumlah').value = '1';
+          document.getElementById('biaya-harga').value = '';
+          document.getElementById('biaya-keterangan').value = '';
+          document.getElementById('biaya-file').value = '';
+          selectedBiayaFile = null;
+          document.getElementById('biaya-file-name').textContent = 'Belum ada file dipilih';
+          document.getElementById('biaya-file-preview').classList.add('hidden');
+          updateBiayaPreview();
+
+          showToast('Data Biaya dicatat! Mengunggah ke Drive & Sheets...', 'success');
+          setSyncIndicator('syncing');
+
+          // 2. KIRIM KE BACKEND
+          try {
+            const saved = await callApi('addBiaya', biayaPayload);
+            const idx = appData.biaya.findIndex(x => x.Biaya_ID === biayaPayload.Biaya_ID);
+            if (idx !== -1) appData.biaya[idx] = saved;
+            setSyncIndicator('synced');
+            if (currentUser.role === 'admin') {
+              renderBiayaTable();
+              renderAdminDashboard();
+            }
+          } catch (err) {
+            appData.biaya = appData.biaya.filter(x => x.Biaya_ID !== biayaPayload.Biaya_ID);
+            setSyncIndicator('error');
+            showToast('Gagal menyimpan biaya: ' + err.message, 'error');
+            if (currentUser.role === 'admin') {
+              renderBiayaTable();
+              renderAdminDashboard();
+            }
+          }
+        }
+      });
+    });
+
+    // =========================================================================
+    // 8. ADMIN: RENDER TABEL TRIP, EDIT & HAPUS (OPTIMISTIC UI)
+    // =========================================================================
+    function renderTripTable() {
+      const tbody = document.getElementById('tbody-trip');
+      const q = (document.getElementById('search-trip').value || '').toLowerCase();
+
+      const filtered = appData.trips.filter(t =>
+        (t.Nama_Pemesan || '').toLowerCase().includes(q) ||
+        (t.Paket_ID || '').toLowerCase().includes(q) ||
+        (t.Paket || '').toLowerCase().includes(q) ||
+        (t.Tanggal_Perjalanan || '').toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-slate-400">Tidak ada data trip ditemukan.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const addTotal = (Number(t.Additional_FnB) || 0) + (Number(t.Additional) || 0);
+        const statusBadge = t.Status === 'Selesai'
+          ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+          : t.Status === 'Batal'
+          ? 'bg-red-100 text-red-800 border-red-200'
+          : 'bg-amber-100 text-amber-800 border-amber-200';
+
+        return `
+          <tr class="hover:bg-[#F4F6F2]/70 transition">
+            <td class="py-3 px-4">
+              <div class="font-bold text-[#15370D] font-mono">${t.Paket_ID}</div>
+              <div class="text-[11px] text-slate-500">${t.Tanggal_Perjalanan}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-800">${t.Nama_Pemesan}</div>
+              <div class="text-[11px] text-slate-500">${t.Nomor_Whatsapp} • <span class="font-semibold text-[#728E6D]">${t.Wisatawan}</span></div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-[#15370D]">${t.Paket} <span class="font-normal text-slate-500">(${formatRupiah(t.Harga_Paket)})</span></div>
+              <div class="text-[11px] text-slate-500">${t.Sesi}</div>
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-slate-700">${t.Jumlah_Orang}</td>
+            <td class="py-3 px-4 text-right">
+              <div class="text-slate-700 font-semibold">${formatRupiah(addTotal)}</div>
+              <div class="text-[10px] text-slate-400">FnB: ${formatRupiah(t.Additional_FnB)} | Add: ${formatRupiah(t.Additional)}</div>
+            </td>
+            <td class="py-3 px-4 text-right font-extrabold text-[#15370D]">${formatRupiah(t.Total_Harga)}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${statusBadge}">${t.Status || 'Selesai'}</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="openEditTripModal('${t.Paket_ID}')" title="Edit Data" class="p-2 rounded-lg bg-[#E5CD82]/30 hover:bg-[#E5CD82] text-[#15370D] transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button onclick="confirmDeleteTrip('${t.Paket_ID}')" title="Hapus Data" class="p-2 rounded-lg bg-red-50 hover:bg-red-500 text-red-600 hover:text-white transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openEditTripModal(paketId) {
+      const trip = appData.trips.find(t => t.Paket_ID === paketId);
+      if (!trip) return;
+
+      document.getElementById('edit-trip-id').value = trip.Paket_ID;
+      document.getElementById('edit-trip-id-label').textContent = `ID: ${trip.Paket_ID}`;
+      document.getElementById('edit-trip-tanggal').value = formatIndoToISO(trip.Tanggal_Perjalanan);
+      document.getElementById('edit-trip-status').value = trip.Status || 'Selesai';
+      document.getElementById('edit-trip-nama').value = trip.Nama_Pemesan;
+      document.getElementById('edit-trip-wa').value = trip.Nomor_Whatsapp;
+      document.getElementById('edit-trip-wisatawan').value = trip.Wisatawan || 'Domestik';
+      document.getElementById('edit-trip-paket').value = trip.Paket || 'Paket 1';
+      document.getElementById('edit-trip-sesi').value = trip.Sesi || '05:00 - 07:00 WIB';
+      document.getElementById('edit-trip-orang').value = trip.Jumlah_Orang || 1;
+      document.getElementById('edit-trip-fnb').value = trip.Additional_FnB || 0;
+      document.getElementById('edit-trip-add').value = trip.Additional || 0;
+
+      recalcEditTrip();
+      document.getElementById('edit-trip-modal').classList.remove('hidden');
+    }
+
+    function recalcEditTrip() {
+      const wisatawan = document.getElementById('edit-trip-wisatawan').value;
+      const paket = document.getElementById('edit-trip-paket').value;
+      const orang = Math.max(1, parseInt(document.getElementById('edit-trip-orang').value) || 1);
+      const fnb = parseFloat(document.getElementById('edit-trip-fnb').value) || 0;
+      const add = parseFloat(document.getElementById('edit-trip-add').value) || 0;
+
+      const hargaPaket = CONFIG.PRICING[wisatawan]?.[paket] || 0;
+      const total = (hargaPaket * orang) + fnb + add;
+
+      document.getElementById('edit-trip-harga-display').textContent = formatRupiah(hargaPaket);
+      document.getElementById('edit-trip-total-display').textContent = formatRupiah(total);
+    }
+
+    document.getElementById('form-edit-trip').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const paketId = document.getElementById('edit-trip-id').value;
+      const wisatawan = document.getElementById('edit-trip-wisatawan').value;
+      const paket = document.getElementById('edit-trip-paket').value;
+      const orang = Math.max(1, parseInt(document.getElementById('edit-trip-orang').value) || 1);
+      const fnb = parseFloat(document.getElementById('edit-trip-fnb').value) || 0;
+      const add = parseFloat(document.getElementById('edit-trip-add').value) || 0;
+      const hargaPaket = CONFIG.PRICING[wisatawan]?.[paket] || 0;
+      const totalHarga = (hargaPaket * orang) + fnb + add;
+
+      const updatedData = {
+        Paket_ID: paketId,
+        Tanggal_Perjalanan: document.getElementById('edit-trip-tanggal').value,
+        Status: document.getElementById('edit-trip-status').value,
+        Nama_Pemesan: document.getElementById('edit-trip-nama').value.trim(),
+        Nomor_Whatsapp: document.getElementById('edit-trip-wa').value.trim(),
+        Wisatawan: wisatawan,
+        Paket: paket,
+        Sesi: document.getElementById('edit-trip-sesi').value,
+        Jumlah_Orang: orang,
+        Additional_FnB: fnb,
+        Additional: add,
+        Harga_Paket: hargaPaket,
+        Total_Harga: totalHarga
+      };
+
+      // Optimistic Update
+      const idx = appData.trips.findIndex(t => t.Paket_ID === paketId);
+      const backup = idx !== -1 ? { ...appData.trips[idx] } : null;
+      if (idx !== -1) {
+        appData.trips[idx] = {
+          ...appData.trips[idx],
+          ...updatedData,
+          Tanggal_Perjalanan: formatISOToIndo(updatedData.Tanggal_Perjalanan)
+        };
+      }
+
+      closeModal('edit-trip-modal');
+      renderTripTable();
+      renderAdminDashboard();
+      showToast('Perubahan trip diterapkan! Menyimpan ke Sheets...', 'success');
+      setSyncIndicator('syncing');
+
+      try {
+        await callApi('updateTrip', updatedData);
+        setSyncIndicator('synced');
+      } catch (err) {
+        if (idx !== -1 && backup) appData.trips[idx] = backup;
+        renderTripTable();
+        renderAdminDashboard();
+        setSyncIndicator('error');
+        showToast('Gagal update trip: ' + err.message, 'error');
+      }
+    });
+
+    function confirmDeleteTrip(paketId) {
+      const trip = appData.trips.find(t => t.Paket_ID === paketId);
+      if (!trip) return;
+
+      showConfirmModal({
+        title: 'Hapus Data Trip?',
+        message: 'Data yang dihapus akan langsung hilang dari Google Sheets dan tidak dapat dikembalikan.',
+        detailHtml: `<div><strong>${trip.Paket_ID}</strong> — ${trip.Nama_Pemesan} (${formatRupiah(trip.Total_Harga)})</div>`,
+        onConfirm: async () => {
+          const backup = [...appData.trips];
+          appData.trips = appData.trips.filter(t => t.Paket_ID !== paketId);
+          renderTripTable();
+          renderAdminDashboard();
+          showToast('Data Trip dihapus.', 'info');
+          setSyncIndicator('syncing');
+
+          try {
+            await callApi('deleteTrip', null, paketId);
+            setSyncIndicator('synced');
+          } catch (err) {
+            appData.trips = backup;
+            renderTripTable();
+            renderAdminDashboard();
+            setSyncIndicator('error');
+            showToast('Gagal menghapus di Sheets: ' + err.message, 'error');
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // 9. ADMIN: RENDER TABEL BIAYA, EDIT & HAPUS (OPTIMISTIC UI)
+    // =========================================================================
+    function renderBiayaTable() {
+      const tbody = document.getElementById('tbody-biaya');
+      const q = (document.getElementById('search-biaya').value || '').toLowerCase();
+
+      const filtered = appData.biaya.filter(b =>
+        (b.Kategori_Biaya || '').toLowerCase().includes(q) ||
+        (b.Keterangan || '').toLowerCase().includes(q) ||
+        (b.Biaya_ID || '').toLowerCase().includes(q) ||
+        (b.Tanggal_Input || '').toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-slate-400">Tidak ada data biaya ditemukan.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(b => {
+        let buktiHtml = `<span class="text-slate-400 italic">Tidak ada</span>`;
+        if (b.Upload_Bukti_Transaksi === 'uploading') {
+          buktiHtml = `<span class="text-amber-600 font-semibold animate-pulse">Mengunggah...</span>`;
+        } else if (b.Upload_Bukti_Transaksi) {
+          buktiHtml = `<a href="${b.Upload_Bukti_Transaksi}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#15370D]/10 text-[#15370D] font-bold hover:bg-[#15370D] hover:text-[#E5CD82] transition">Lihat Bukti ↗</a>`;
+        }
+
+        return `
+          <tr class="hover:bg-[#F4F6F2]/70 transition">
+            <td class="py-3 px-4">
+              <div class="font-bold text-[#15370D] font-mono">${b.Biaya_ID}</div>
+              <div class="text-[11px] text-slate-500">${b.Tanggal_Input}</div>
+            </td>
+            <td class="py-3 px-4 font-bold text-slate-800">${b.Kategori_Biaya}</td>
+            <td class="py-3 px-4 text-slate-700">${b.Jumlah} ${b.Satuan}</td>
+            <td class="py-3 px-4 text-right text-slate-600">${formatRupiah(b.Harga_Satuan)}</td>
+            <td class="py-3 px-4 text-right font-extrabold text-[#15370D]">${formatRupiah(b.Jumlah_Harga)}</td>
+            <td class="py-3 px-4 text-center">${buktiHtml}</td>
+            <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${b.Keterangan || '-'}</td>
+            <td class="py-3 px-4 text-center">
+              <div class="inline-flex items-center gap-1.5">
+                <button onclick="openEditBiayaModal('${b.Biaya_ID}')" title="Edit Biaya" class="p-2 rounded-lg bg-[#E5CD82]/30 hover:bg-[#E5CD82] text-[#15370D] transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button onclick="confirmDeleteBiaya('${b.Biaya_ID}')" title="Hapus Biaya" class="p-2 rounded-lg bg-red-50 hover:bg-red-500 text-red-600 hover:text-white transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openEditBiayaModal(biayaId) {
+      const item = appData.biaya.find(b => b.Biaya_ID === biayaId);
+      if (!item) return;
+
+      document.getElementById('edit-biaya-id').value = item.Biaya_ID;
+      document.getElementById('edit-biaya-id-label').textContent = `ID: ${item.Biaya_ID}`;
+      document.getElementById('edit-biaya-existing-url').value = item.Upload_Bukti_Transaksi || '';
+      document.getElementById('edit-biaya-tanggal').value = formatIndoToISO(item.Tanggal_Input);
+      document.getElementById('edit-biaya-kategori').value = item.Kategori_Biaya;
+      document.getElementById('edit-biaya-jumlah').value = item.Jumlah;
+      document.getElementById('edit-biaya-satuan').value = item.Satuan;
+      document.getElementById('edit-biaya-harga').value = item.Harga_Satuan;
+      document.getElementById('edit-biaya-keterangan').value = item.Keterangan || '';
+      document.getElementById('edit-biaya-file').value = '';
+
+      recalcEditBiaya();
+      document.getElementById('edit-biaya-modal').classList.remove('hidden');
+    }
+
+    function recalcEditBiaya() {
+      const j = parseFloat(document.getElementById('edit-biaya-jumlah').value) || 0;
+      const h = parseFloat(document.getElementById('edit-biaya-harga').value) || 0;
+      document.getElementById('edit-biaya-total-display').textContent = formatRupiah(j * h);
+    }
+
+    document.getElementById('form-edit-biaya').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const biayaId = document.getElementById('edit-biaya-id').value;
+      const jumlah = parseFloat(document.getElementById('edit-biaya-jumlah').value) || 0;
+      const hargaSatuan = parseFloat(document.getElementById('edit-biaya-harga').value) || 0;
+      const fileInput = document.getElementById('edit-biaya-file');
+
+      let fileObj = null;
+      if (fileInput.files && fileInput.files[0]) {
+        fileObj = await readFileAsBase64(fileInput.files[0]);
+      }
+
+      const updatedData = {
+        Biaya_ID: biayaId,
+        Tanggal_Input: document.getElementById('edit-biaya-tanggal').value,
+        Kategori_Biaya: document.getElementById('edit-biaya-kategori').value,
+        Jumlah: jumlah,
+        Satuan: document.getElementById('edit-biaya-satuan').value,
+        Harga_Satuan: hargaSatuan,
+        Jumlah_Harga: jumlah * hargaSatuan,
+        Upload_Bukti_Transaksi: document.getElementById('edit-biaya-existing-url').value,
+        Keterangan: document.getElementById('edit-biaya-keterangan').value.trim(),
+        fileBase64: fileObj ? fileObj.base64 : null,
+        fileName: fileObj ? fileObj.name : null,
+        fileMimeType: fileObj ? fileObj.mimeType : null
+      };
+
+      const idx = appData.biaya.findIndex(b => b.Biaya_ID === biayaId);
+      const backup = idx !== -1 ? { ...appData.biaya[idx] } : null;
+      if (idx !== -1) {
+        appData.biaya[idx] = {
+          ...appData.biaya[idx],
+          ...updatedData,
+          Tanggal_Input: formatISOToIndo(updatedData.Tanggal_Input)
+        };
+      }
+
+      closeModal('edit-biaya-modal');
+      renderBiayaTable();
+      renderAdminDashboard();
+      showToast('Perubahan biaya diterapkan! Menyimpan ke Sheets...', 'success');
+      setSyncIndicator('syncing');
+
+      try {
+        const res = await callApi('updateBiaya', updatedData);
+        if (idx !== -1 && res.fileUrl) {
+          appData.biaya[idx].Upload_Bukti_Transaksi = res.fileUrl;
+          renderBiayaTable();
+        }
+        setSyncIndicator('synced');
+      } catch (err) {
+        if (idx !== -1 && backup) appData.biaya[idx] = backup;
+        renderBiayaTable();
+        renderAdminDashboard();
+        setSyncIndicator('error');
+        showToast('Gagal update biaya: ' + err.message, 'error');
+      }
+    });
+
+    function confirmDeleteBiaya(biayaId) {
+      const item = appData.biaya.find(b => b.Biaya_ID === biayaId);
+      if (!item) return;
+
+      showConfirmModal({
+        title: 'Hapus Data Biaya?',
+        message: 'Baris biaya ini akan dihapus permanen dari Google Sheets.',
+        detailHtml: `<div><strong>${item.Biaya_ID}</strong> — ${item.Kategori_Biaya} (${formatRupiah(item.Jumlah_Harga)})</div>`,
+        onConfirm: async () => {
+          const backup = [...appData.biaya];
+          appData.biaya = appData.biaya.filter(b => b.Biaya_ID !== biayaId);
+          renderBiayaTable();
+          renderAdminDashboard();
+          showToast('Data Biaya dihapus.', 'info');
+          setSyncIndicator('syncing');
+
+          try {
+            await callApi('deleteBiaya', null, biayaId);
+            setSyncIndicator('synced');
+          } catch (err) {
+            appData.biaya = backup;
+            renderBiayaTable();
+            renderAdminDashboard();
+            setSyncIndicator('error');
+            showToast('Gagal menghapus di Sheets: ' + err.message, 'error');
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // 10. ADMIN: REKAP / LAPORAN & GRAFIK (CHART.JS)
+    // =========================================================================
+    function resetDateFilter() {
+      document.getElementById('filter-start-date').value = '';
+      document.getElementById('filter-end-date').value = '';
+      renderAdminDashboard();
+    }
+
+    function renderAdminDashboard() {
+      const startISO = document.getElementById('filter-start-date').value;
+      const endISO = document.getElementById('filter-end-date').value;
+
+      const filterByDate = (indoDateStr) => {
+        if (!startISO && !endISO) return true;
+        const iso = formatIndoToISO(indoDateStr);
+        if (!iso) return true;
+        if (startISO && iso < startISO) return false;
+        if (endISO && iso > endISO) return false;
+        return true;
+      };
+
+      const validTrips = appData.trips.filter(t => t.Status !== 'Batal' && filterByDate(t.Tanggal_Perjalanan));
+      const validBiaya = appData.biaya.filter(b => filterByDate(b.Tanggal_Input));
+
+      // Kalkulasi KPI
+      const totalPendapatan = validTrips.reduce((sum, t) => sum + (Number(t.Total_Harga) || 0), 0);
+      const totalBiaya = validBiaya.reduce((sum, b) => sum + (Number(b.Jumlah_Harga) || 0), 0);
+      const labaBersih = totalPendapatan - totalBiaya;
+      const margin = totalPendapatan > 0 ? ((labaBersih / totalPendapatan) * 100).toFixed(1) : 0;
+
+      const totalTrip = validTrips.length;
+      const totalPax = validTrips.reduce((sum, t) => sum + (Number(t.Jumlah_Orang) || 0), 0);
+      const paxDomestik = validTrips.filter(t => t.Wisatawan !== 'Mancanegara').reduce((s, t) => s + (Number(t.Jumlah_Orang) || 0), 0);
+      const paxManca = validTrips.filter(t => t.Wisatawan === 'Mancanegara').reduce((s, t) => s + (Number(t.Jumlah_Orang) || 0), 0);
+
+      document.getElementById('kpi-pendapatan').textContent = formatRupiah(totalPendapatan);
+      document.getElementById('kpi-biaya').textContent = formatRupiah(totalBiaya);
+      document.getElementById('kpi-biaya-sub').textContent = `${validBiaya.length} transaksi pengeluaran`;
+      document.getElementById('kpi-profit').textContent = formatRupiah(labaBersih);
+      document.getElementById('kpi-margin').textContent = `Margin Keuntungan: ${margin}%`;
+      document.getElementById('kpi-trip').textContent = `${totalTrip} Trip`;
+      document.getElementById('kpi-pax').textContent = `${totalPax} Pax`;
+      document.getElementById('kpi-wisatawan-split').textContent = `Domestik: ${paxDomestik} Pax • Mancanegara: ${paxManca} Pax`;
+
+      // Pills Paket Terlaris
+      const paketCounts = { 'Paket 1': 0, 'Paket 2': 0, 'Paket 3': 0 };
+      validTrips.forEach(t => {
+        if (paketCounts[t.Paket] !== undefined) paketCounts[t.Paket] += (Number(t.Jumlah_Orang) || 0);
+      });
+      document.getElementById('paket-summary-pills').innerHTML = Object.entries(paketCounts).map(([k, v]) => `
+        <span class="px-2.5 py-1 rounded-lg bg-[#F4F6F2] text-[#15370D] font-bold border border-[#728E6D]/30">${k}: ${v} Pax</span>
+      `).join('');
+
+      // Render Grafik 1: Tren Harian Pendapatan vs Biaya
+      const dailyMap = {};
+      validTrips.forEach(t => {
+        const d = t.Tanggal_Perjalanan || 'Tanpa Tgl';
+        if (!dailyMap[d]) dailyMap[d] = { rev: 0, exp: 0 };
+        dailyMap[d].rev += Number(t.Total_Harga) || 0;
+      });
+      validBiaya.forEach(b => {
+        const d = b.Tanggal_Input || 'Tanpa Tgl';
+        if (!dailyMap[d]) dailyMap[d] = { rev: 0, exp: 0 };
+        dailyMap[d].exp += Number(b.Jumlah_Harga) || 0;
+      });
+
+      const sortedDates = Object.keys(dailyMap).sort((a, b) => formatIndoToISO(a).localeCompare(formatIndoToISO(b))).slice(-14);
+      const revSeries = sortedDates.map(d => dailyMap[d].rev);
+      const expSeries = sortedDates.map(d => dailyMap[d].exp);
+
+      const ctx1 = document.getElementById('chart-revenue-expense').getContext('2d');
+      if (chartRevExp) chartRevExp.destroy();
+      chartRevExp = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: sortedDates,
+          datasets: [
+            {
+              label: 'Pendapatan (Rp)',
+              data: revSeries,
+              backgroundColor: '#15370D',
+              borderRadius: 6
+            },
+            {
+              label: 'Biaya Operasional (Rp)',
+              data: expSeries,
+              backgroundColor: '#E5CD82',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', size: 11 } } } },
+          scales: {
+            y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+            x: { ticks: { font: { size: 10 } } }
+          }
+        }
+      });
+
+      // Render Grafik 2: Doughnut Kategori Biaya
+      const catMap = {};
+      validBiaya.forEach(b => {
+        const k = b.Kategori_Biaya || 'Lainnya';
+        catMap[k] = (catMap[k] || 0) + (Number(b.Jumlah_Harga) || 0);
+      });
+
+      const ctx2 = document.getElementById('chart-expense-category').getContext('2d');
+      if (chartExpCat) chartExpCat.destroy();
+      chartExpCat = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catMap).length ? Object.keys(catMap) : ['Belum ada biaya'],
+          datasets: [{
+            data: Object.keys(catMap).length ? Object.values(catMap) : [1],
+            backgroundColor: ['#15370D', '#728E6D', '#E5CD82', '#3d5e35', '#a3b18a'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '65%',
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { family: 'Plus Jakarta Sans', size: 10 } } }
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // 11. UTILITAS UI: TOAST, MODAL KONFIRMASI, LOADING & FORMATTER
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const colors = {
+        success: 'bg-[#15370D] text-white border-[#E5CD82]',
+        error: 'bg-red-700 text-white border-red-300',
+        info: 'bg-slate-800 text-white border-[#728E6D]'
+      };
+      const icons = {
+        success: '✓',
+        error: '✕',
+        info: 'ℹ'
+      };
+
+      const toast = document.createElement('div');
+      toast.className = `toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-xl border ${colors[type] || colors.success}`;
+      toast.innerHTML = `
+        <span class="w-6 h-6 rounded-full bg-[#E5CD82] text-[#15370D] font-extrabold text-xs flex items-center justify-center shrink-0">${icons[type]}</span>
+        <p class="text-xs font-semibold leading-snug">${message}</p>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3800);
+    }
+
+    function showConfirmModal({ title, message, detailHtml = '', onConfirm }) {
+      const modal = document.getElementById('confirm-modal');
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+
+      const detailBox = document.getElementById('confirm-detail-box');
+      if (detailHtml) {
+        detailBox.innerHTML = detailHtml;
+        detailBox.classList.remove('hidden');
+      } else {
+        detailBox.classList.add('hidden');
+      }
+
+      const okBtn = document.getElementById('confirm-ok-btn');
+      const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+      const cleanup = () => {
+        modal.classList.add('hidden');
+        okBtn.onclick = null;
+        cancelBtn.onclick = null;
+      };
+
+      cancelBtn.onclick = cleanup;
+      okBtn.onclick = () => {
+        cleanup();
+        if (onConfirm) onConfirm();
+      };
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function showLoading(title, subtitle) {
+      document.getElementById('loading-title').textContent = title;
+      document.getElementById('loading-subtitle').textContent = subtitle;
+      document.getElementById('loading-overlay').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading-overlay').classList.add('hidden');
+    }
+
+    function formatRupiah(num) {
+      const val = Number(num) || 0;
+      return 'Rp ' + val.toLocaleString('id-ID');
+    }
+
+    function formatISOToIndo(isoStr) {
+      if (!isoStr || !isoStr.includes('-')) return isoStr;
+      const [y, m, d] = isoStr.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function formatIndoToISO(indoStr) {
+      if (!indoStr) return '';
+      if (indoStr.includes('-')) return indoStr.slice(0, 10);
+      const parts = indoStr.split(' ')[0].split('/');
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      }
+      return '';
+    }
+
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ base64: reader.result, name: file.name, mimeType: file.type });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // STATE KALENDER
+    let calendarCurrentDate = new Date(); // Bulan pertama yang ditampilkan
+
+    function changeCalendarMonth(offset) {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + offset);
+      renderCalendarView();
+    }
+
+    function resetCalendarMonth() {
+      calendarCurrentDate = new Date();
+      renderCalendarView();
+    }
+
+    function renderCalendarView() {
+      const container = document.getElementById('calendar-container');
+      container.innerHTML = '';
+
+      // Render 2 Bulan berdampingan (Bulan ke-0 dan Bulan ke-1)
+      for (let i = 0; i < 2; i++) {
+        const targetDate = new Date(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth() + i, 1);
+        container.appendChild(createMonthCalendarElement(targetDate));
+      }
+    }
+
+    function createMonthCalendarElement(dateObj) {
+      const year = dateObj.getFullYear();
+      const month = dateObj.getMonth();
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20';
+
+      let html = `
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+          <h3 class="font-extrabold text-base text-[#15370D]">${monthNames[month]} ${year}</h3>
+          <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#E5CD82]/30 text-[#15370D]">2 Bulan Paginasi</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400 mb-2">
+          <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1.5">
+      `;
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+      const todayISO = new Date().toISOString().split('T')[0];
+
+      // Kotak kosong sebelum tanggal 1
+      for (let i = 0; i < firstDayIndex; i++) {
+        html += `<div class="h-10 rounded-2xl bg-slate-50/50 border border-transparent"></div>`;
+      }
+
+      // Loop tanggal dalam bulan
+      for (let d = 1; d <= totalDays; d++) {
+        const dayStr = String(d).padStart(2, '0');
+        const monthStr = String(month + 1).padStart(2, '0');
+        const isoDate = `${year}-${monthStr}-${dayStr}`;
+        const indoDateFormatted = `${dayStr}/${monthStr}/${year}`;
+
+        // Cari trip yang sesuai dengan tanggal ini
+        const tripsOnThisDay = appData.trips.filter(t => {
+          if (t.Status === 'Batal') return false;
+          const tIso = formatIndoToISO(t.Tanggal_Perjalanan);
+          return tIso === isoDate;
+        });
+
+        const isToday = isoDate === todayISO;
+        const hasBooking = tripsOnThisDay.length > 0;
+
+        let cellBg = isToday ? 'bg-[#E5CD82]/20 border-[#E5CD82]' : 'bg-white border-slate-200/70 hover:border-[#728E6D]';
+        
+        html += `<div class="h-16 rounded-2xl p-1.5 border ${cellBg} flex flex-col justify-between overflow-hidden transition relative">`;
+        html += `<div class="flex items-center justify-between"><span class="text-xs font-bold ${isToday ? 'text-[#15370D] bg-[#E5CD82] px-1.5 py-0.2 rounded-md' : 'text-slate-700'}">${d}</span>`;
+        if (hasBooking) {
+          html += `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="${tripsOnThisDay.length} Trip"></span>`;
+        }
+        html += `</div>`;
+
+        // Kotak nama pemesan di dalam kalender
+        html += `<div class="flex-1 overflow-y-auto space-y-1 mt-1 no-scrollbar">`;
+        tripsOnThisDay.forEach(t => {
+          html += `
+            <button onclick="openTripDetailModal('${t.Paket_ID}')" class="w-full text-left px-1.5 py-1 rounded-lg bg-[#15370D] text-[#E5CD82] hover:brightness-110 text-[10px] font-bold truncate shadow-xs block" title="${t.Nama_Pemesan} (${t.Paket})">
+            ${t.Nama_Pemesan}
+            </button>
+          `;
+        });
+        html += `</div>`;
+
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      card.innerHTML = html;
+      return card;
+    }
+
+    function openTripDetailModal(paketId) {
+      const trip = appData.trips.find(t => t.Paket_ID === paketId);
+      if (!trip) return;
+
+      document.getElementById('modal-trip-id').textContent = `ID: ${trip.Paket_ID}`;
+      document.getElementById('modal-trip-tgl').textContent = trip.Tanggal_Perjalanan;
+      document.getElementById('modal-trip-nama').textContent = trip.Nama_Pemesan;
+      document.getElementById('modal-trip-wa').textContent = trip.Nomor_Whatsapp || '-';
+      document.getElementById('modal-trip-paket').textContent = `${trip.Paket} (${trip.Wisatawan || 'Domestik'})`;
+      document.getElementById('modal-trip-sesi').textContent = trip.Sesi || '-';
+      document.getElementById('modal-trip-pax').textContent = `${trip.Jumlah_Orang} Orang (Pax)`;
+      document.getElementById('modal-trip-total').textContent = formatRupiah(trip.Total_Harga);
+
+      document.getElementById('trip-detail-modal').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
