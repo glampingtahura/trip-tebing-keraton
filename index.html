@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Shuttle Ontang-Anting — Tebing Keraton | Glamping Tahura</title>
+  <title>Sistem Aplikasi Glamping Tahura - Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,6 +72,15 @@
       animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
+  <!-- Favicon Standar untuk Browser -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa">
+
+  <!-- Apple Touch Icon untuk iPhone / iPad (Shortcut ke Home Screen) -->
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa">
+
+  <!-- Ikon Web App / Shortcut untuk Android -->
+  <link rel="shortcut icon" href="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa">
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
@@ -129,6 +138,39 @@
           <button id="confirm-cancel-btn" type="button" class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Batal</button>
           <button id="confirm-ok-btn" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-md transition">Ya, Lanjutkan</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL POP-UP LOGIN GAGAL -->
+  <!-- ===================================================================== -->
+  <div id="login-error-modal" class="hidden fixed inset-0 z-[95] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-red-200 transform transition-all scale-100">
+      <div class="bg-gradient-to-r from-red-800 to-red-600 px-6 py-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center text-[#E5CD82] shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-white font-bold text-base">Akses Ditolak</h3>
+          <p class="text-[#E5CD82] text-xs">Autentikasi Gagal</p>
+        </div>
+      </div>
+      <div class="p-6 text-center">
+        <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </div>
+        <h4 class="font-extrabold text-slate-800 text-base">Username atau Password Salah</h4>
+        <p id="login-error-message" class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+          Data akun tidak cocok dengan database Glamping Tahura. Silakan periksa kembali penulisan username dan password Anda.
+        </p>
+        <button type="button" onclick="closeLoginErrorModal()" class="mt-6 w-full py-3 rounded-xl text-sm font-extrabold text-[#15370D] tahura-gold-gradient hover:brightness-105 shadow-md transition">
+          Coba Lagi
+        </button>
       </div>
     </div>
   </div>
@@ -303,15 +345,15 @@
   <!-- ===================================================================== -->
   <!-- HALAMAN LOGIN -->
   <!-- ===================================================================== -->
-  <section id="login-screen" class="min-h-screen tahura-hero-gradient flex items-center justify-center p-4">
+  <section id="login-screen" class="hidden min-h-screen tahura-hero-gradient flex items-center justify-center p-4">
     <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-[#E5CD82]/50">
       <div class="tahura-gradient px-8 pt-8 pb-7 text-center relative overflow-hidden">
         <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white border border-[#E5CD82]/50 flex items-center justify-center overflow-hidden shadow-inner p-1">
         <img src="https://lh3.googleusercontent.com/d/1Y8aZ2Fc4dzm8v-1PL1E1Vqj3DyrjGxWa" alt="Logo Glamping Tahura" class="w-full h-full object-contain" />
         </div>
         <span class="inline-block px-3 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#E5CD82] text-[#15370D] mb-2">Glamping Tahura</span>
-        <h1 class="text-white font-extrabold text-2xl tracking-tight">Shuttle Ontang-Anting</h1>
-        <p class="text-white/80 text-xs mt-1">Sistem Operasional Trip Tebing Keraton</p>
+        <h1 class="text-white font-extrabold text-2xl tracking-tight">Sistem Management</h1>
+        
       </div>
 
       <form id="login-form" class="p-8 space-y-5">
@@ -328,7 +370,7 @@
         </button>
 
         <div class="pt-3 border-t border-slate-100 text-center">
-          <p class="text-[11px] text-slate-400">Gunakan akun Driver atau Admin yang telah terdaftar</p>
+          <p class="text-[11px] text-slate-400">Web App Depeloved By Tiar</p>
         </div>
       </form>
     </div>
@@ -348,7 +390,7 @@
             </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none">Shuttle Tebing Keraton</h1>
+              <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none">Glamping Tahura Sistem</h1>
               <span id="role-badge" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-[#E5CD82] text-[#15370D]">USER</span>
             </div>
             <p class="text-[11px] text-white/75 mt-0.5">CV Tahura Group</p>
@@ -415,7 +457,7 @@
 
               <div>
                 <label class="block text-xs font-bold text-[#15370D] mb-1.5">Nama Pemesan <span class="text-red-500">*</span></label>
-                <input type="text" id="trip-nama" required placeholder="Contoh: Bagas Admin" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
+                <input type="text" id="trip-nama" required placeholder="Contoh: Bagas Tahura" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-[#15370D] focus:ring-2 focus:ring-[#728E6D]/30 outline-none text-sm" />
               </div>
 
               <div>
@@ -554,106 +596,239 @@
       </div>
 
       <!-- ================================================================= -->
-      <!-- VIEW 3: REKAP / LAPORAN DASHBOARD (KHUSUS ADMIN) -->
+      <!-- VIEW: REKAP & LAPORAN (DENGAN 2 SUB TAB: BOOKING & SHUTTLE) -->
       <!-- ================================================================= -->
       <div id="view-admin-laporan" class="hidden space-y-6">
-        <!-- Filter Bar -->
-        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <!-- Sub Tab Navigation Pills -->
+        <div class="flex gap-2 border-b border-slate-200 pb-3">
+          <button type="button" onclick="switchReportSubTab('booking')" id="subtab-btn-booking" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow">
+            🏕️ Booking Glamping Tahura
+          </button>
+          <button type="button" onclick="switchReportSubTab('shuttle')" id="subtab-btn-shuttle" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100">
+            🚐 Shuttle Ontang-Anting
+          </button>
+        </div>
+
+        <!-- ================= SUB TAB 1: BOOKING GLAMPING TAHURA ================= -->
+        <div id="report-subtab-booking" class="space-y-6">
+          <!-- Filter Bar Booking -->
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Analitik Reservasi Kamar</span>
+              <h2 class="text-xl font-extrabold text-[#15370D]">Rekapitulasi Booking Glamping Tahura</h2>
+            </div>
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1"> Dari Tanggal (Cek In)</label>
+                <input type="date" id="filter-bk-start-date" onchange="renderBookingReportDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Sampai Tanggal (Cek In)</label>
+                <input type="date" id="filter-bk-end-date" onchange="renderBookingReportDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none" />
+              </div>
+              <button type="button" onclick="resetBookingDateFilter()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F4F6F2] text-[#15370D] border border-[#728E6D]/30 transition">
+                Reset Filter
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI CARDS BOOKING -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="tahura-gradient rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#E5CD82]">Total Pendapatan Booking</span>
+              <p id="kpi-bk-pendapatan" class="text-2xl font-extrabold mt-3 text-white">Rp 0</p>
+              <p class="text-[11px] text-white/75 mt-1">Berdasarkan data BOOKING</p>
+            </div>
+            <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Kamar Terjual</span>
+              <p id="kpi-bk-malam" class="text-2xl font-extrabold mt-3 text-slate-800">0 Malam</p>
+              <p class="text-[11px] text-slate-500 mt-1">Durasi total menginap</p>
+            </div>
+            <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-[#E5CD82]">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#15370D]">Total Reservasi Sukses</span>
+              <p id="kpi-bk-total" class="text-2xl font-extrabold mt-3 text-[#15370D]">0 Booking</p>
+              <p class="text-[11px] font-semibold text-[#728E6D] mt-1">Status Confirmed/Completed</p>
+            </div>
+            <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Tamu (Pax)</span>
+              <p id="kpi-bk-pax" class="text-2xl font-extrabold text-[#15370D] mt-3">0 Pax</p>
+              <p id="kpi-bk-pax-split" class="text-[11px] text-slate-500 mt-1">Dewasa: 0 • Anak: 0</p>
+            </div>
+          </div>
+
+          <!-- CHARTS GRID BOOKING -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Grafik 1: Perbandingan Pendapatan Tiap Bulan (Bar Chart) -->
+            <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20">
+              <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Perbandingan Pendapatan Tiap Bulan</h3>
+              <p class="text-xs text-slate-500 mb-4">Akumulasi nominal dibayar dari data sheet BOOKING</p>
+              <div class="h-64">
+                <canvas id="chart-booking-monthly"></canvas>
+              </div>
+            </div>
+
+            <!-- Grafik 2: Perbandingan Type Glamping (Donut Chart) -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20 flex flex-col justify-between">
+              <div>
+                <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Distribusi Type Glamping</h3>
+                <p class="text-xs text-slate-500 mb-4">Jumlah booking berdasarkan unit glamping</p>
+                <div class="h-52 flex items-center justify-center">
+                  <canvas id="chart-booking-glamping-donut"></canvas>
+                </div>
+              </div>
+              <div id="booking-type-summary-pills" class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5 text-[11px]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SUB TAB 2: SHUTTLE ONTA-ANTING ================= -->
+        <div id="report-subtab-shuttle" class="hidden space-y-6">
+          <!-- Filter Bar Shuttle -->
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Analitik & Keuangan</span>
+              <h2 class="text-xl font-extrabold text-[#15370D]">Rekapitulasi Shuttle Tebing Keraton</h2>
+            </div>
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Dari Tanggal</label>
+                <input type="date" id="filter-start-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Sampai Tanggal</label>
+                <input type="date" id="filter-end-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
+              </div>
+              <button type="button" onclick="resetDateFilter()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F4F6F2] text-[#15370D] hover:bg-[#728E6D]/20 border border-[#728E6D]/30 transition">
+                Reset Semua
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI CARDS SHUTTLE -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Card 1: Total Pendapatan -->
+            <div class="tahura-gradient rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#E5CD82]">Total Pendapatan</span>
+                <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-[#E5CD82]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+              </div>
+              <p id="kpi-pendapatan" class="text-2xl font-extrabold mt-3 text-white">Rp 0</p>
+              <p id="kpi-pendapatan-sub" class="text-[11px] text-white/75 mt-1">Termasuk Additional & FnB</p>
+            </div>
+
+            <!-- Card 2: Total Biaya Operasional -->
+            <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Biaya Operasional</span>
+                <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                </div>
+              </div>
+              <p id="kpi-biaya" class="text-2xl font-extrabold mt-3 text-slate-800">Rp 0</p>
+              <p id="kpi-biaya-sub" class="text-[11px] text-slate-500 mt-1">0 transaksi pengeluaran</p>
+            </div>
+
+            <!-- Card 3: Laba Bersih -->
+            <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-[#E5CD82]">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#15370D]">Laba Bersih (Profit)</span>
+                <div class="w-9 h-9 rounded-xl bg-[#E5CD82]/30 flex items-center justify-center text-[#15370D]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+              </div>
+              <p id="kpi-profit" class="text-2xl font-extrabold mt-3 text-[#15370D]">Rp 0</p>
+              <p id="kpi-margin" class="text-[11px] font-semibold text-[#728E6D] mt-1">Margin: 0%</p>
+            </div>
+
+            <!-- Card 4: Total Trip & Penumpang -->
+            <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Trip & Penumpang</span>
+                <div class="w-9 h-9 rounded-xl bg-[#728E6D]/15 flex items-center justify-center text-[#15370D]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+              </div>
+              <div class="flex items-baseline gap-2 mt-3">
+                <p id="kpi-trip" class="text-2xl font-extrabold text-[#15370D]">0 Trip</p>
+                <span class="text-slate-300">|</span>
+                <p id="kpi-pax" class="text-lg font-bold text-[#728E6D]">0 Pax</p>
+              </div>
+              <p id="kpi-wisatawan-split" class="text-[11px] text-slate-500 mt-1">Domestik: 0 • Mancanegara: 0</p>
+            </div>
+          </div>
+
+          <!-- CHARTS GRID SHUTTLE -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20">
+              <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Tren Pendapatan vs Biaya Operasional</h3>
+              <p class="text-xs text-slate-500 mb-4">Perbandingan pemasukan trip dan pengeluaran harian</p>
+              <div class="h-64">
+                <canvas id="chart-revenue-expense"></canvas>
+              </div>
+            </div>
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20 flex flex-col justify-between">
+              <div>
+                <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Komposisi Pengeluaran</h3>
+                <p class="text-xs text-slate-500 mb-4">Berdasarkan kategori biaya shuttle</p>
+                <div class="h-52 flex items-center justify-center">
+                  <canvas id="chart-expense-category"></canvas>
+                </div>
+              </div>
+              <div id="paket-summary-pills" class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5 text-[11px]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- VIEW: DATA BOOKING (KHUSUS ADMIN) -->
+      <!-- ================================================================= -->
+      <div id="view-admin-booking" class="hidden space-y-4">
+        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Analitik & Keuangan</span>
-            <h2 class="text-xl font-extrabold text-[#15370D]">Rekapitulasi Shuttle Tebing Keraton</h2>
+            <h2 class="text-lg font-extrabold text-[#15370D]">Database Booking Glamping Tahura</h2>
+            <p class="text-xs text-slate-500">Kelola reservasi kamar, lihat rincian lengkap, edit, atau tambah booking baru.</p>
           </div>
-          <div class="flex flex-wrap items-end gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-500 mb-1">Dari Tanggal</label>
-              <input type="date" id="filter-start-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="search-booking" oninput="renderBookingTable()" placeholder="Cari ID / Nama pemesan..." class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:border-[#15370D] w-full sm:w-48" />
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] font-bold text-slate-500">Cek In:</span>
+              <input type="date" id="filter-booking-date" onchange="renderBookingTable()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none" />
+              <button type="button" onclick="resetBookingFilter()" class="px-2.5 py-2 text-xs bg-slate-100 rounded-xl text-slate-600 hover:bg-slate-200" title="Reset Filter">✕</button>
             </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-500 mb-1">Sampai Tanggal</label>
-              <input type="date" id="filter-end-date" onchange="renderAdminDashboard()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-[#15370D] outline-none focus:border-[#15370D]" />
-            </div>
-            <button type="button" onclick="resetDateFilter()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F4F6F2] text-[#15370D] hover:bg-[#728E6D]/20 border border-[#728E6D]/30 transition">
-              Reset Semua
-            </button>
+            <button type="button" onclick="openAddBookingModal()" class="px-4 py-2.5 rounded-xl text-xs font-extrabold text-[#15370D] tahura-gold-gradient shrink-0 shadow">+ Booking</button>
           </div>
         </div>
 
-        <!-- KPI CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1: Total Pendapatan -->
-          <div class="tahura-gradient rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#E5CD82]">Total Pendapatan</span>
-              <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-[#E5CD82]">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-            </div>
-            <p id="kpi-pendapatan" class="text-2xl font-extrabold mt-3 text-white">Rp 0</p>
-            <p id="kpi-pendapatan-sub" class="text-[11px] text-white/75 mt-1">Termasuk Additional & FnB</p>
+        <div class="bg-white rounded-3xl shadow-md border border-[#728E6D]/20 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="tahura-gradient text-white uppercase tracking-wider text-[11px]">
+                  <th class="py-3.5 px-4">Booking ID & Tanggal</th>
+                  <th class="py-3.5 px-4">Cek In / Out</th>
+                  <th class="py-3.5 px-4 text-center">Malam</th>
+                  <th class="py-3.5 px-4">Nama</th>
+                  <th class="py-3.5 px-4">Type Glamping</th>
+                  <th class="py-3.5 px-4 text-right">Harga</th>
+                  <th class="py-3.5 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-booking" class="divide-y divide-slate-100">
+                <tr><td colspan="7" class="py-8 text-center text-slate-400">Memuat data booking...</td></tr>
+              </tbody>
+            </table>
           </div>
-
-          <!-- Card 2: Total Biaya Operasional -->
-          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Biaya Operasional</span>
-              <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
-              </div>
+          <!-- Paginasi Footer -->
+          <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span id="booking-pagination-info" class="text-slate-500 font-medium">Menampilkan 0-0 dari 0 data</span>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="changeBookingPage(-1)" id="btn-prev-booking" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 font-bold text-slate-700 disabled:opacity-40">Sebelumnya</button>
+              <span id="booking-page-number" class="font-bold text-[#15370D]">1 / 1</span>
+              <button type="button" onclick="changeBookingPage(1)" id="btn-next-booking" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 font-bold text-slate-700 disabled:opacity-40">Berikutnya</button>
             </div>
-            <p id="kpi-biaya" class="text-2xl font-extrabold mt-3 text-slate-800">Rp 0</p>
-            <p id="kpi-biaya-sub" class="text-[11px] text-slate-500 mt-1">0 transaksi pengeluaran</p>
-          </div>
-
-          <!-- Card 3: Laba Bersih -->
-          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-[#E5CD82]">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#15370D]">Laba Bersih (Profit)</span>
-              <div class="w-9 h-9 rounded-xl bg-[#E5CD82]/30 flex items-center justify-center text-[#15370D]">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-              </div>
-            </div>
-            <p id="kpi-profit" class="text-2xl font-extrabold mt-3 text-[#15370D]">Rp 0</p>
-            <p id="kpi-margin" class="text-[11px] font-semibold text-[#728E6D] mt-1">Margin: 0%</p>
-          </div>
-
-          <!-- Card 4: Total Trip & Penumpang -->
-          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/25">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Trip & Penumpang</span>
-              <div class="w-9 h-9 rounded-xl bg-[#728E6D]/15 flex items-center justify-center text-[#15370D]">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-            </div>
-            <div class="flex items-baseline gap-2 mt-3">
-              <p id="kpi-trip" class="text-2xl font-extrabold text-[#15370D]">0 Trip</p>
-              <span class="text-slate-300">|</span>
-              <p id="kpi-pax" class="text-lg font-bold text-[#728E6D]">0 Pax</p>
-            </div>
-            <p id="kpi-wisatawan-split" class="text-[11px] text-slate-500 mt-1">Domestik: 0 • Mancanegara: 0</p>
-          </div>
-        </div>
-
-        <!-- CHARTS GRID -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Grafik 1: Pendapatan vs Biaya -->
-          <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20">
-            <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Tren Pendapatan vs Biaya Operasional</h3>
-            <p class="text-xs text-slate-500 mb-4">Perbandingan pemasukan trip dan pengeluaran harian</p>
-            <div class="h-64">
-              <canvas id="chart-revenue-expense"></canvas>
-            </div>
-          </div>
-
-          <!-- Grafik 2: Distribusi Paket / Kategori Biaya -->
-          <div class="bg-white rounded-3xl p-6 shadow-md border border-[#728E6D]/20 flex flex-col justify-between">
-            <div>
-              <h3 class="font-extrabold text-sm text-[#15370D] mb-1">Komposisi Pengeluaran</h3>
-              <p class="text-xs text-slate-500 mb-4">Berdasarkan kategori biaya shuttle</p>
-              <div class="h-52 flex items-center justify-center">
-                <canvas id="chart-expense-category"></canvas>
-              </div>
-            </div>
-            <div id="paket-summary-pills" class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1.5 text-[11px]"></div>
           </div>
         </div>
       </div>
@@ -735,34 +910,83 @@
       </div>
 
       <!-- ================================================================= -->
-      <!-- VIEW: KALENDER TRIP (DRIVER & ADMIN) -->
+      <!-- VIEW: KALENDER (DENGAN 2 SUB TAB: GLAMPING & TRIP) -->
       <!-- ================================================================= -->
-      <div id="view-kalender" class="hidden space-y-5">
-        <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Jadwal & Reservasi</span>
-            <h2 class="text-xl font-extrabold text-[#15370D]">Kalender Trip Tebing Keraton</h2>
-            <p class="text-xs text-slate-500">Menampilkan jadwal trip 2 bulan sekaligus. Klik pada tanggal ber-badge untuk melihat rincian.</p>
+      <div id="view-kalender" class="hidden space-y-6">
+        <!-- Sub Tab Navigation Pills Kalender -->
+        <div class="flex gap-2 border-b border-slate-200 pb-3">
+          <button type="button" onclick="switchCalendarSubTab('glamping')" id="subtab-btn-cal-glamping" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow">
+            🏕️ Kalender Glamping Tahura
+          </button>
+          <button type="button" onclick="switchCalendarSubTab('trip')" id="subtab-btn-cal-trip" class="px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100">
+            🚐 Kalender Trip Tebing Keraton
+          </button>
+        </div>
+
+        <!-- ================= SUB TAB 1: KALENDER GLAMPING TAHURA ================= -->
+        <div id="calendar-subtab-glamping" class="space-y-5">
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Jadwal Reservasi Kamar</span>
+              <h2 class="text-xl font-extrabold text-[#15370D]">Kalender Glamping Tahura</h2>
+              <p class="text-xs text-slate-500">Menampilkan jadwal cek-in & durasi menginap berdasarkan sheet BOOKING. Warna kotak dibedakan tiap Tipe Glamping.</p>
+            </div>
+            <!-- Kontrol Paginasi Bulan Glamping -->
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="changeGlampingCalendarMonth(-1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                Sebelumnya
+              </button>
+              <button type="button" onclick="resetGlampingCalendarMonth()" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                Bulan Ini
+              </button>
+              <button type="button" onclick="changeGlampingCalendarMonth(1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+                Berikutnya
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </div>
-          <!-- Kontrol Paginasi Bulan -->
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="changeCalendarMonth(-1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-              Bulan Sebelumnya
-            </button>
-            <button type="button" onclick="resetCalendarMonth()" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-              Bulan Ini
-            </button>
-            <button type="button" onclick="changeCalendarMonth(1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
-              Bulan Berikutnya
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-            </button>
+
+          <!-- Wadah Grid 2 Bulan Kalender Glamping -->
+          <div id="calendar-glamping-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+
+          <!-- Legenda Warna Type Glamping -->
+          <div class="bg-white rounded-3xl p-5 shadow-sm border border-[#728E6D]/20">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-[#15370D] mb-3">Legenda Tipe Glamping</h4>
+            <div id="calendar-glamping-legend" class="flex flex-wrap gap-3">
+              <!-- Render dinamis legenda warna -->
+            </div>
           </div>
         </div>
 
-        <!-- Wadah Grid 2 Bulan Kalender -->
-        <div id="calendar-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Render dinamis via JavaScript -->
+        <!-- ================= SUB TAB 2: KALENDER TRIP TEBING KERATON ================= -->
+        <div id="calendar-subtab-trip" class="hidden space-y-5">
+          <div class="bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#728E6D]">Jadwal & Reservasi</span>
+              <h2 class="text-xl font-extrabold text-[#15370D]">Kalender Trip Tebing Keraton</h2>
+              <p class="text-xs text-slate-500">Menampilkan jadwal trip 2 bulan sekaligus. Klik pada tanggal ber-badge untuk melihat rincian.</p>
+            </div>
+            <!-- Kontrol Paginasi Bulan Trip -->
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="changeCalendarMonth(-1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                Bulan Sebelumnya
+              </button>
+              <button type="button" onclick="resetCalendarMonth()" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                Bulan Ini
+              </button>
+              <button type="button" onclick="changeCalendarMonth(1)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#15370D] text-[#E5CD82] hover:brightness-110 shadow flex items-center gap-1">
+                Bulan Berikutnya
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Wadah Grid 2 Bulan Kalender Trip -->
+          <div id="calendar-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Render dinamis via JavaScript -->
+          </div>
         </div>
       </div>
 
@@ -822,8 +1046,194 @@
   </div>
 
     <footer class="py-4 text-center text-[11px] text-slate-400 border-t border-slate-200/70 bg-white/50">
-      Shuttle Ontang-Anting Tebing Keraton • Glamping Tahura Bandung
+      Web App Develoved By : Tiar - Glamping Tahura @2026
     </footer>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL SLIDE-OVER RINCIAN BOOKING (IKON MATA) -->
+  <!-- ===================================================================== -->
+  <div id="booking-slideover" class="hidden fixed inset-0 z-[85] bg-black/50 backdrop-blur-xs flex justify-end transition-opacity">
+    <div class="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-0">
+      <div class="tahura-gradient px-6 py-4 flex items-center justify-between text-white shrink-0">
+        <div>
+          <h3 class="font-bold text-base">Rincian Reservasi Booking</h3>
+          <p id="so-booking-id" class="text-[#E5CD82] text-xs font-mono">ID: -</p>
+        </div>
+        <button type="button" onclick="closeBookingSlideOver()" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-6 space-y-4 text-xs text-slate-700 bg-[#F4F6F2]/50">
+        <!-- Card 1: Informasi Tamu -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/60 space-y-2">
+          <h4 class="font-extrabold text-[#15370D] uppercase tracking-wider text-[11px] border-b pb-1.5 border-slate-100">Informasi Tamu</h4>
+          <div class="flex justify-between"><span class="text-slate-500">Nama Lengkap</span><span id="so-nama" class="font-bold text-slate-900">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Email</span><span id="so-email" class="font-medium">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">No. Telepon</span><span id="so-telepon" class="font-bold">-</span></div>
+        </div>
+
+        <!-- Card 2: Jadwal & Unit -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/60 space-y-2">
+          <h4 class="font-extrabold text-[#15370D] uppercase tracking-wider text-[11px] border-b pb-1.5 border-slate-100">Jadwal & Unit Glamping</h4>
+          <div class="flex justify-between"><span class="text-slate-500">Type Glamping</span><span id="so-glamping" class="font-bold text-[#15370D]">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Cek In / Out</span><span id="so-jadwal" class="font-bold">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Durasi Menginap</span><span id="so-malam" class="font-bold">-</span></div>
+        </div>
+
+        <!-- Card 3: Tamu & F&B Pax -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/60 space-y-2">
+          <h4 class="font-extrabold text-[#15370D] uppercase tracking-wider text-[11px] border-b pb-1.5 border-slate-100">Rincian Tamu & F&B Pax</h4>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <div class="bg-slate-50 p-2.5 rounded-xl border"><span class="text-slate-500 block text-[10px]">Dewasa</span><span id="so-dewasa" class="font-bold text-sm text-slate-800">0</span></div>
+            <div class="bg-slate-50 p-2.5 rounded-xl border"><span class="text-slate-500 block text-[10px]">Anak</span><span id="so-anak" class="font-bold text-sm text-slate-800">0</span></div>
+            <div class="bg-slate-50 p-2.5 rounded-xl border"><span class="text-slate-500 block text-[10px]">Breakfast Pax</span><span id="so-bf-pax" class="font-bold text-sm text-slate-800">0</span></div>
+            <div class="bg-slate-50 p-2.5 rounded-xl border"><span class="text-slate-500 block text-[10px]">Dinner Pax</span><span id="so-din-pax" class="font-bold text-sm text-slate-800">0</span></div>
+          </div>
+        </div>
+
+        <!-- Card 4: Keuangan & Status -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/60 space-y-2">
+          <h4 class="font-extrabold text-[#15370D] uppercase tracking-wider text-[11px] border-b pb-1.5 border-slate-100">Rincian Pembayaran & Status</h4>
+          <div class="flex justify-between"><span class="text-slate-500">Harga Kamar</span><span id="so-harga" class="font-bold text-[#15370D]">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Harga Breakfast</span><span id="so-bf-harga">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Harga Dinner</span><span id="so-din-harga">-</span></div>
+          <div class="flex justify-between border-t pt-1 font-bold"><span class="text-slate-700">Total Dibayar</span><span id="so-dibayar" class="text-emerald-700">-</span></div>
+          <div class="flex justify-between pt-1"><span class="text-slate-500">Status Booking</span><span id="so-status-booking" class="px-2 py-0.5 rounded font-bold uppercase text-[10px] bg-blue-100 text-blue-800">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Status Payment</span><span id="so-status-payment" class="px-2 py-0.5 rounded font-bold uppercase text-[10px] bg-emerald-100 text-emerald-800">-</span></div>
+        </div>
+
+        <!-- Card 5: Catatan & Kupon -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/60 space-y-2">
+          <h4 class="font-extrabold text-[#15370D] uppercase tracking-wider text-[11px] border-b pb-1.5 border-slate-100">Catatan & Kupon</h4>
+          <div class="flex justify-between"><span class="text-slate-500">Catatan</span><span id="so-catatan" class="font-medium">-</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">Kupon</span><span id="so-kupon" class="font-medium">-</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL FORM TAMBAH / EDIT BOOKING -->
+  <!-- ===================================================================== -->
+  <div id="booking-modal" class="hidden fixed inset-0 z-[85] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-[#728E6D]/30 my-8">
+      <div class="tahura-gradient px-6 py-4 flex items-center justify-between text-white">
+        <div>
+          <h3 id="booking-modal-title" class="font-bold text-lg">Tambah Booking Baru</h3>
+          <p class="text-[#E5CD82] text-xs">Glamping Tahura Bandung</p>
+        </div>
+        <button type="button" onclick="closeModal('booking-modal')" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="form-booking" class="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+        <input type="hidden" id="bk-is-edit" value="0" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Booking ID <span class="text-slate-400 font-normal">(Kosongkan untuk Auto)</span></label>
+            <input type="text" id="bk-id" placeholder="Auto-generate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Nama Lengkap Tamu <span class="text-red-500">*</span></label>
+            <input type="text" id="bk-nama" required placeholder="Contoh: Si Monta" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Email</label>
+            <input type="email" id="bk-email" placeholder="tamu@email.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">No. Telepon / WhatsApp</label>
+            <input type="tel" id="bk-telp" placeholder="081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Tanggal Cek In <span class="text-red-500">*</span></label>
+            <input type="date" id="bk-cekin" required onchange="calcBookingNight()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Tanggal Cek Out <span class="text-red-500">*</span></label>
+            <input type="date" id="bk-cekout" required onchange="calcBookingNight()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Type Glamping <span class="text-red-500">*</span></label>
+            <!-- PERBAIKAN: Menambahkan onchange untuk memanggil calcBookingPrice saat glamping diganti -->
+            <select id="bk-glamping" required onchange="calcBookingPrice()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-[#15370D] outline-none">
+              <!-- Diisi dinamis dari UNIT_REF -->
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Jumlah Malam (Malam)</label>
+            <input type="number" id="bk-malam" min="1" value="1" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-[#15370D]" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Dewasa</label>
+            <input type="number" id="bk-dewasa" min="1" value="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Anak</label>
+            <input type="number" id="bk-anak" min="0" value="0" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Breakfast Pax</label>
+            <!-- PERBAIKAN: Menambahkan oninput -->
+            <input type="number" id="bk-bf-pax" min="0" value="0" oninput="calcBookingPrice()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Dinner Pax</label>
+            <!-- PERBAIKAN: Menambahkan oninput -->
+            <input type="number" id="bk-din-pax" min="0" value="0" oninput="calcBookingPrice()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Harga Breakfast (Rp)</label>
+            <input type="text" id="bk-bf-harga" value="30000" oninput="onHargaInput(this); recalcManualBookingTotal();" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Harga Dinner (Rp)</label>
+            <input type="text" id="bk-din-harga" value="65000" oninput="onHargaInput(this); recalcManualBookingTotal();" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Harga Kamar (Total Rp) <span class="text-red-500">*</span></label>
+            <input type="text" id="bk-harga" required oninput="onHargaInput(this); recalcManualBookingTotal();" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-[#15370D] outline-none" />
+          </div>
+          <div>
+            <label class="block font-extrabold text-[#15370D] mb-1">Total Dibayar (Rp)</label>
+            <!-- Menggunakan type="text" agar format titik pemisah ribuan bisa tampil dengan cantik -->
+            <input type="text" id="bk-dibayar" readonly class="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#E5CD82] bg-[#15370D] font-extrabold text-sm text-[#E5CD82] shadow-sm outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Status Booking</label>
+            <select id="bk-status-booking" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white outline-none">
+              <option value="confirmed">confirmed</option>
+              <option value="pending">pending</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Status Payment</label>
+            <select id="bk-status-payment" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white outline-none">
+              <option value="completed">completed</option>
+              <option value="pending">pending</option>
+              <option value="verifikasi">verifikasi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Catatan</label>
+            <input type="text" id="bk-catatan" value="Website" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+          <div>
+            <label class="block font-bold text-[#15370D] mb-1">Kupon</label>
+            <input type="text" id="bk-kupon" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 outline-none" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('booking-modal')" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">Batal</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-[#15370D] tahura-gold-gradient shadow-md hover:brightness-105">Simpan Booking</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ===================================================================== -->
@@ -835,13 +1245,7 @@
     // =========================================================================
     const CONFIG = {
       // TEMPELKAN URL WEB APP GOOGLE APPS SCRIPT (/exec) ANDA DI BAWAH INI:
-      WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyhpx7PN5SbqgZZfkO5vgMYLgR34ynjGtCMh3fwXky2iKAKlGkkMBfH552AfBtGhco1Lg/exec',
-
-      // DAFTAR AKUN LOGIN (BISA DITAMBAH ATAU DIUBAH SEWAKTU-WAKTU):
-      USERS: [
-        { username: 'admin', password: 'admin123', role: 'admin', name: 'Admin Tahura' },
-        { username: 'driver', password: 'driver123', role: 'user', name: 'Driver Ontang-Anting' }
-      ],
+      WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyRbqH9OSzRNTZoc66mhFh3zm-b3JHiOvzQ65_J3Pxs79_UsUsI2RDz40J_UhAVwZPCFA/exec',
 
       // MATRIKS HARGA PAKET BERDASARKAN WISATAWAN:
       PRICING: {
@@ -861,8 +1265,12 @@
     // STATE GLOBAL
     let currentUser = null;
     let appData = { trips: [], biaya: [] };
+    
+    // Variabel Global untuk Instance Chart.js (Shuttle & Booking)
     let chartRevExp = null;
     let chartExpCat = null;
+    let chartBkMonthly = null;
+    let chartBkGlampingDonut = null;
 
     // =========================================================================
     // 2. INISIALISASI HALAMAN
@@ -876,33 +1284,53 @@
       updateTripPricePreview();
       updateBiayaPreview();
 
-      // Cek sesi login tersimpan
+     // Cek sesi login tersimpan
       const savedUser = sessionStorage.getItem('tahura_shuttle_user');
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
         initAppSession();
+      } else {
+        document.getElementById('login-screen').classList.remove('hidden');
       }
     });
 
     // =========================================================================
     // 3. SISTEM LOGIN & ROLE MANAGEMENT
     // =========================================================================
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('login-username').value.trim();
       const p = document.getElementById('login-password').value.trim();
 
-      const found = CONFIG.USERS.find(acc => acc.username === u && acc.password === p);
-      if (!found) {
-        showToast('Username atau password salah!', 'error');
-        return;
-      }
+      // Tampilkan modal loading animasi shuttle
+      showLoading('Memverifikasi Akun...', 'Memeriksa kredensial pada database User');
 
-      currentUser = found;
-      sessionStorage.setItem('tahura_shuttle_user', JSON.stringify(found));
-      showToast(`Selamat datang, ${found.name}!`, 'success');
-      initAppSession();
+      try {
+        const userData = await callApi('login', { username: u, password: p });
+
+        currentUser = userData;
+        sessionStorage.setItem('tahura_shuttle_user', JSON.stringify(userData));
+        hideLoading();
+        showToast(`Selamat datang, ${userData.name}!`, 'success');
+        initAppSession();
+      } catch (err) {
+        hideLoading();
+        showLoginErrorModal(err.message);
+      }
     });
+
+    function showLoginErrorModal(msg) {
+      const msgEl = document.getElementById('login-error-message');
+      if (msg) msgEl.textContent = msg;
+      document.getElementById('login-error-modal').classList.remove('hidden');
+    }
+
+    function closeLoginErrorModal() {
+      document.getElementById('login-error-modal').classList.add('hidden');
+      const passInput = document.getElementById('login-password');
+      passInput.value = '';
+      passInput.focus();
+    }
 
     function handleLogout() {
       showConfirmModal({
@@ -934,6 +1362,7 @@
         const adminTabs = [
           { id: 'admin-laporan', label: '📊 Rekap & Laporan' },
           { id: 'kalender', label: '📅 Kalender' },
+          { id: 'admin-booking', label: '🗂️ Data Booking' },
           { id: 'admin-trip', label: '🚐 Data Trip' },
           { id: 'admin-biaya', label: '🧾 Data Biaya' },
           { id: 'input-trip', label: '➕ Input Trip' },
@@ -963,13 +1392,21 @@
           `;
         });
         switchTab('input-trip');
+        fetchAllData(false);
       }
     }
 
     function switchTab(tabId) {
-      const views = ['input-trip', 'input-biaya', 'admin-laporan', 'kalender', 'admin-trip', 'admin-biaya'];
-      views.forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
-      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      // PERBAIKAN: Tambahkan 'admin-booking' ke dalam array views
+      const views = ['input-trip', 'input-biaya', 'admin-laporan', 'kalender', 'admin-trip', 'admin-biaya', 'admin-booking'];
+      
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const activeView = document.getElementById(`view-${tabId}`);
+      if (activeView) activeView.classList.remove('hidden');
 
       document.querySelectorAll('.tab-btn').forEach(btn => {
         if (btn.dataset.tab === tabId) {
@@ -981,10 +1418,17 @@
         }
       });
 
-      if (tabId === 'admin-laporan') renderAdminDashboard();
+      if (tabId === 'admin-laporan') {
+        renderBookingReportDashboard();
+        renderAdminDashboard();
+      }
       if (tabId === 'admin-trip') renderTripTable();
       if (tabId === 'admin-biaya') renderBiayaTable();
-      if (tabId === 'kalender') renderCalendarView();
+      if (tabId === 'kalender') {
+        renderGlampingCalendarView();
+        renderCalendarView();
+      }
+      if (tabId === 'admin-booking') renderBookingTable();
     }
 
     // =========================================================================
@@ -1083,15 +1527,29 @@
       if (showLoader) showLoading('Memuat Data Terbaru...');
       setSyncIndicator('syncing');
       try {
+        // 1. Ambil data Trip dan Biaya utama
         const result = await callApi('getAllData');
         appData.trips = result.trips || [];
         appData.biaya = result.biaya || [];
+
+        // 2. Jika admin, ambil data Booking secara terpisah ke bookingDataState
+        if (currentUser?.role === 'admin') {
+          const resBooking = await callApi('getBookings');
+          bookingDataState.bookings = resBooking.bookings || [];
+          bookingDataState.units = resBooking.units || [];
+          populateGlampingDropdowns();
+          renderBookingReportDashboard();
+        }
+
         setSyncIndicator('synced');
 
         if (currentUser?.role === 'admin') {
           renderAdminDashboard();
           renderTripTable();
           renderBiayaTable();
+          renderBookingTable();
+          renderCalendarView();
+          renderGlampingCalendarView()
         }
       } catch (err) {
         setSyncIndicator('error');
@@ -1595,7 +2053,7 @@
 
       showConfirmModal({
         title: 'Hapus Data Biaya?',
-        message: 'Baris biaya ini akan dihapus permanen dari Google Sheets.',
+        message: 'Baris biaya ini akan dihapus permanen dari Database.',
         detailHtml: `<div><strong>${item.Biaya_ID}</strong> — ${item.Kategori_Biaya} (${formatRupiah(item.Jumlah_Harga)})</div>`,
         onConfirm: async () => {
           const backup = [...appData.biaya];
@@ -1860,6 +2318,29 @@
       });
     }
 
+    // Mengubah angka mentah menjadi format titik ribuan
+    function formatRupiahInput(angka) {
+      if (!angka && angka !== 0) return '';
+      const numberString = angka.toString().replace(/[^,\d]/g, '');
+      const split = numberString.split(',');
+      let sisa = split[0].length % 3;
+      let rupiah = split[0].substr(0, sisa);
+      let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+      if (ribuan) {
+        let separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+      }
+      return split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+    }
+
+    // Membersihkan titik ribuan kembali menjadi angka murni sebelum dikirim ke Google Sheets
+    function cleanNumber(formattedStr) {
+      if (!formattedStr) return 0;
+      // Hapus semua titik, lalu ubah ke tipe data Number (Float/Integer)
+      return parseFloat(formattedStr.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
     // STATE KALENDER
     let calendarCurrentDate = new Date(); // Bulan pertama yang ditampilkan
 
@@ -1920,8 +2401,8 @@
         const indoDateFormatted = `${dayStr}/${monthStr}/${year}`;
 
         // Cari trip yang sesuai dengan tanggal ini
-        const tripsOnThisDay = appData.trips.filter(t => {
-          if (t.Status === 'Batal') return false;
+        const tripsOnThisDay = (appData.trips || []).filter(t => {
+          if (!t || t.Status === 'Batal') return false;
           const tIso = formatIndoToISO(t.Tanggal_Perjalanan);
           return tIso === isoDate;
         });
@@ -1972,6 +2453,660 @@
 
       document.getElementById('trip-detail-modal').classList.remove('hidden');
     }
+
+    // =========================================================================
+    // MODUL DATA BOOKING (CRUD, PAGINASI, SLIDE-OVER, FILTER)
+    // =========================================================================
+    let bookingDataState = {
+      bookings: [],
+      units: [],
+      currentPage: 1,
+      pageSize: 10
+    };
+
+    // Override fetchAllData / panggil getBookingsData saat admin aktif
+    const originalFetchAllData = fetchAllData;
+    fetchAllData = async function(showLoader = false) {
+      await originalFetchAllData(showLoader);
+      if (currentUser?.role === 'admin') {
+        try {
+          const res = await callApi('getBookings');
+          bookingDataState.bookings = res.bookings || [];
+          bookingDataState.units = res.units || [];
+          populateGlampingDropdowns();
+          renderBookingTable();
+        } catch (err) {
+          console.error('Gagal memuat data booking:', err);
+        }
+      }
+    };
+
+    function populateGlampingDropdowns() {
+      const select = document.getElementById('bk-glamping');
+      if (!select) return;
+      select.innerHTML = bookingDataState.units.map(u => `<option value="${u.name}">${u.name}</option>`).join('');
+    }
+
+    function resetBookingFilter() {
+      document.getElementById('search-booking').value = '';
+      document.getElementById('filter-booking-date').value = '';
+      bookingDataState.currentPage = 1;
+      renderBookingTable();
+    }
+
+    function renderBookingTable() {
+      const tbody = document.getElementById('tbody-booking');
+      const q = (document.getElementById('search-booking').value || '').toLowerCase();
+      const filterDate = document.getElementById('filter-booking-date').value; // YYYY-MM-DD
+
+      const filtered = bookingDataState.bookings.filter(b => {
+        const matchQ = (b.Booking_ID || '').toLowerCase().includes(q) || (b.Nama_Lengkap || '').toLowerCase().includes(q);
+        if (!matchQ) return false;
+
+        if (filterDate) {
+          const checkinISO = formatIndoToISO(b.Cek_In);
+          if (checkinISO !== filterDate) return false;
+        }
+        return true;
+      });
+
+      const totalItems = filtered.length;
+      const totalPages = Math.ceil(totalItems / bookingDataState.pageSize) || 1;
+      if (bookingDataState.currentPage > totalPages) bookingDataState.currentPage = totalPages;
+
+      const startIdx = (bookingDataState.currentPage - 1) * bookingDataState.pageSize;
+      const paginated = filtered.slice(startIdx, startIdx + bookingDataState.pageSize);
+
+      // Update info paginasi
+      document.getElementById('booking-pagination-info').textContent = totalItems === 0 ? 'Menampilkan 0 dari 0 data' : `Menampilkan ${startIdx + 1}-${Math.min(startIdx + bookingDataState.pageSize, totalItems)} dari ${totalItems} data`;
+      document.getElementById('booking-page-number').textContent = `${bookingDataState.currentPage} / ${totalPages}`;
+      document.getElementById('btn-prev-booking').disabled = bookingDataState.currentPage <= 1;
+      document.getElementById('btn-next-booking').disabled = bookingDataState.currentPage >= totalPages;
+
+      if (paginated.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-10 text-center text-slate-400">Tidak ada data booking ditemukan.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = paginated.map(b => `
+        <tr class="hover:bg-[#F4F6F2]/70 transition">
+          <td class="py-3 px-4">
+            <div class="font-bold text-[#15370D] font-mono">${b.Booking_ID}</div>
+            <div class="text-[11px] text-slate-500">${b.Tanggal || '-'}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-800">${b.Cek_In}</div>
+            <div class="text-[11px] text-slate-500">s/d ${b.Cek_Out}</div>
+          </td>
+          <td class="py-3 px-4 text-center font-bold text-slate-700">${b.Malam}</td>
+          <td class="py-3 px-4 font-bold text-slate-900">${b.Nama_Lengkap}</td>
+          <td class="py-3 px-4 font-semibold text-[#15370D]">${b.Glamping}</td>
+          <td class="py-3 px-4 text-right font-extrabold text-[#15370D]">${formatRupiah(b.Harga)}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="inline-flex items-center gap-1.5">
+              <button onclick="openBookingSlideOver('${b.Booking_ID}')" title="Lihat Rincian" class="p-2 rounded-lg bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+              <button onclick="openEditBookingModal('${b.Booking_ID}')" title="Edit Booking" class="p-2 rounded-lg bg-[#E5CD82]/30 hover:bg-[#E5CD82] text-[#15370D] transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="confirmDeleteBooking('${b.Booking_ID}')" title="Hapus Booking" class="p-2 rounded-lg bg-red-50 hover:bg-red-500 text-red-600 hover:text-white transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function changeBookingPage(dir) {
+      bookingDataState.currentPage += dir;
+      renderBookingTable();
+    }
+
+    function openBookingSlideOver(bookingId) {
+      const b = bookingDataState.bookings.find(x => x.Booking_ID === bookingId);
+      if (!b) return;
+
+      document.getElementById('so-booking-id').textContent = `ID: ${b.Booking_ID} • Tanggal: ${b.Tanggal}`;
+      document.getElementById('so-nama').textContent = b.Nama_Lengkap;
+      document.getElementById('so-email').textContent = b.Email || '-';
+      document.getElementById('so-telepon').textContent = b.No_Telepon || '-';
+      document.getElementById('so-glamping').textContent = b.Glamping;
+      document.getElementById('so-jadwal').textContent = `${b.Cek_In} s/d ${b.Cek_Out}`;
+      document.getElementById('so-malam').textContent = `${b.Malam} Malam`;
+      document.getElementById('so-dewasa').textContent = b.Dewasa;
+      document.getElementById('so-anak').textContent = b.Anak;
+      document.getElementById('so-bf-pax').textContent = b.Breakfast_Pax;
+      document.getElementById('so-din-pax').textContent = b.Dinner_Pax;
+      document.getElementById('so-harga').textContent = formatRupiah(b.Harga);
+      document.getElementById('so-bf-harga').textContent = formatRupiah(b.Breakfast);
+      document.getElementById('so-din-harga').textContent = formatRupiah(b.Dinner);
+      document.getElementById('so-dibayar').textContent = formatRupiah(b.Dibayar);
+      document.getElementById('so-status-booking').textContent = b.Status_Booking;
+      document.getElementById('so-status-payment').textContent = b.Status_Payment;
+      document.getElementById('so-catatan').textContent = b.Catatan || '-';
+      document.getElementById('so-kupon').textContent = b.Kupon || '-';
+
+      document.getElementById('booking-slideover').classList.remove('hidden');
+    }
+
+    function closeBookingSlideOver() {
+      document.getElementById('booking-slideover').classList.add('hidden');
+    }
+
+    function openAddBookingModal() {
+      document.getElementById('booking-modal-title').textContent = 'Tambah Booking Baru';
+      document.getElementById('bk-is-edit').value = '0';
+      document.getElementById('form-booking').reset();
+      document.getElementById('bk-id').value = '';
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('bk-cekin').value = today;
+      document.getElementById('bk-cekout').value = today;
+      
+      // SET DEFAULT HARGA BREAKFAST (30.000) & DINNER (65.000) PER PAX
+      document.getElementById('bk-bf-harga').value = 30000;
+      document.getElementById('bk-din-harga').value = 65000;
+
+      calcBookingNight();
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function openEditBookingModal(bookingId) {
+      const b = bookingDataState.bookings.find(x => x.Booking_ID === bookingId);
+      if (!b) return;
+
+      document.getElementById('booking-modal-title').textContent = `Edit Booking ID: ${b.Booking_ID}`;
+      document.getElementById('bk-is-edit').value = '1';
+      document.getElementById('bk-id').value = b.Booking_ID;
+      document.getElementById('bk-nama').value = b.Nama_Lengkap;
+      document.getElementById('bk-email').value = b.Email;
+      document.getElementById('bk-telp').value = b.No_Telepon;
+      document.getElementById('bk-cekin').value = formatIndoToISO(b.Cek_In);
+      document.getElementById('bk-cekout').value = formatIndoToISO(b.Cek_Out);
+      document.getElementById('bk-glamping').value = b.Glamping;
+      document.getElementById('bk-malam').value = b.Malam;
+      document.getElementById('bk-dewasa').value = b.Dewasa;
+      document.getElementById('bk-anak').value = b.Anak;
+      document.getElementById('bk-bf-pax').value = b.Breakfast_Pax;
+      document.getElementById('bk-din-pax').value = b.Dinner_Pax;
+      document.getElementById('bk-harga').value = b.Harga;
+      document.getElementById('bk-dibayar').value = b.Dibayar;
+      document.getElementById('bk-bf-harga').value = b.Breakfast;
+      document.getElementById('bk-din-harga').value = b.Dinner;
+      document.getElementById('bk-status-booking').value = b.Status_Booking || 'confirmed';
+      document.getElementById('bk-status-payment').value = b.Status_Payment || 'completed';
+      document.getElementById('bk-catatan').value = b.Catatan || '';
+      document.getElementById('bk-kupon').value = b.Kupon || '';
+
+      document.getElementById('booking-modal').classList.add('hidden'); // reset lalu buka
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function calcBookingNight() {
+      const inStr = document.getElementById('bk-cekin').value;
+      const outStr = document.getElementById('bk-cekout').value;
+      if (inStr && outStr) {
+        const d1 = new Date(inStr);
+        const d2 = new Date(outStr);
+        const diffTime = d2 - d1;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('bk-malam').value = diffDays > 0 ? diffDays : 1;
+      }
+      calcBookingPrice();
+    }
+
+    function calcBookingPrice() {
+      const glampingName = document.getElementById('bk-glamping').value;
+      const unit = bookingDataState.units.find(u => u.name === glampingName);
+      const malam = parseInt(document.getElementById('bk-malam').value) || 1;
+      
+      const bfPax = parseInt(document.getElementById('bk-bf-pax').value) || 0;
+      const dinPax = parseInt(document.getElementById('bk-din-pax').value) || 0;
+
+      if (unit) {
+        const hargaKamarSatuan = unit.weekday || 0;
+        const estHargaKamar = hargaKamarSatuan * malam;
+        const estHargaBf = bfPax * 30000;
+        const estHargaDin = dinPax * 65000;
+
+        document.getElementById('bk-harga').value = formatRupiahInput(estHargaKamar);
+        document.getElementById('bk-bf-harga').value = formatRupiahInput(estHargaBf);
+        document.getElementById('bk-din-harga').value = formatRupiahInput(estHargaDin);
+        
+        document.getElementById('bk-dibayar').value = formatRupiahInput(estHargaKamar + estHargaBf + estHargaDin);
+      }
+    }
+
+    function recalcManualBookingTotal() {
+      const kamar = cleanNumber(document.getElementById('bk-harga').value);
+      const bf = cleanNumber(document.getElementById('bk-bf-harga').value);
+      const din = cleanNumber(document.getElementById('bk-din-harga').value);
+      document.getElementById('bk-dibayar').value = formatRupiahInput(kamar + bf + din);
+    }
+
+    document.getElementById('form-booking').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const isEdit = document.getElementById('bk-is-edit').value === '1';
+
+      const payload = {
+        Booking_ID: document.getElementById('bk-id').value.trim(),
+        Cek_In: document.getElementById('bk-cekin').value,
+        Cek_Out: document.getElementById('bk-cekout').value,
+        Malam: parseInt(document.getElementById('bk-malam').value) || 1,
+        Dewasa: parseInt(document.getElementById('bk-dewasa').value) || 2,
+        Anak: parseInt(document.getElementById('bk-anak').value) || 0,
+        Breakfast_Pax: parseInt(document.getElementById('bk-bf-pax').value) || 0,
+        Dinner_Pax: parseInt(document.getElementById('bk-din-pax').value) || 0,
+        Nama_Lengkap: document.getElementById('bk-nama').value.trim(),
+        Email: document.getElementById('bk-email').value.trim() || '-',
+        No_Telepon: document.getElementById('bk-telp').value.trim() || '-',
+        Glamping: document.getElementById('bk-glamping').value,
+        Breakfast: parseFloat(document.getElementById('bk-bf-harga').value) || 0,
+        Dinner: parseFloat(document.getElementById('bk-din-harga').value) || 0,
+        Harga: parseFloat(document.getElementById('bk-harga').value) || 0,
+        Status_Booking: document.getElementById('bk-status-booking').value,
+        Status_Payment: document.getElementById('bk-status-payment').value,
+        Dibayar: parseFloat(document.getElementById('bk-dibayar').value) || 0,
+        Catatan: document.getElementById('bk-catatan').value.trim(),
+        Kupon: document.getElementById('bk-kupon').value.trim()
+      };
+
+      closeModal('booking-modal');
+      showToast(isEdit ? 'Memperbarui data booking...' : 'Menambahkan booking baru...', 'success');
+      setSyncIndicator('syncing');
+
+      try {
+        if (isEdit) {
+          await callApi('updateBooking', payload);
+        } else {
+          await callApi('addBooking', payload);
+        }
+        setSyncIndicator('synced');
+        showToast('Data booking berhasil disinkronkan!', 'success');
+        const res = await callApi('getBookings');
+        bookingDataState.bookings = res.bookings || [];
+        renderBookingTable();
+      } catch (err) {
+        setSyncIndicator('error');
+        showToast('Gagal menyimpan booking: ' + err.message, 'error');
+      }
+    });
+
+    function confirmDeleteBooking(bookingId) {
+      showConfirmModal({
+        title: 'Hapus Data Booking?',
+        message: `Booking ID ${bookingId} akan dihapus permanen dari Database.`,
+        onConfirm: async () => {
+          showToast('Menghapus data booking...', 'info');
+          setSyncIndicator('syncing');
+          try {
+            await callApi('deleteBooking', null, bookingId);
+            bookingDataState.bookings = bookingDataState.bookings.filter(b => b.Booking_ID !== bookingId);
+            renderBookingTable();
+            setSyncIndicator('synced');
+            showToast('Data booking berhasil dihapus.', 'success');
+          } catch (err) {
+            setSyncIndicator('error');
+            showToast('Gagal menghapus: ' + err.message, 'error');
+          }
+        }
+      });
+    }
+
+    function onHargaInput(el) {
+      let cursorPosition = el.selectionStart;
+      let originalLength = el.value.length;
+      
+      let rawVal = el.value.replace(/[^0-9]/g, '');
+      el.value = formatRupiahInput(rawVal);
+      
+      // Menyesuaikan posisi kursor agar tidak loncat ke ujung teks saat mengetik
+      let newLength = el.value.length;
+      cursorPosition = cursorPosition + (newLength - originalLength);
+      el.setSelectionRange(cursorPosition, cursorPosition);
+    }
+
+    // SUB TAB SWITCHING DI LAPORAN
+    function switchReportSubTab(subTab) {
+      const bkEl = document.getElementById('report-subtab-booking');
+      const shEl = document.getElementById('report-subtab-shuttle');
+      const btnBk = document.getElementById('subtab-btn-booking');
+      const btnSh = document.getElementById('subtab-btn-shuttle');
+
+      if (subTab === 'booking') {
+        bkEl.classList.remove('hidden');
+        shEl.classList.add('hidden');
+        btnBk.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow";
+        btnSh.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
+        renderBookingReportDashboard();
+      } else {
+        bkEl.classList.add('hidden');
+        shEl.classList.remove('hidden');
+        btnSh.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow";
+        btnBk.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
+        renderAdminDashboard();
+      }
+    }
+
+    // =========================================================================
+    // RENDER SUB TAB 1: BOOKING GLAMPING TAHURA (DENGAN FILTER & GRAFIK DINAMIS)
+    // =========================================================================
+    function resetBookingDateFilter() {
+      document.getElementById('filter-bk-start-date').value = '';
+      document.getElementById('filter-bk-end-date').value = '';
+      renderBookingReportDashboard();
+    }
+
+    function renderBookingReportDashboard() {
+      const startISO = document.getElementById('filter-bk-start-date').value;
+      const endISO = document.getElementById('filter-bk-end-date').value;
+
+      const filterByDate = (indoDateStr) => {
+        if (!startISO && !endISO) return true;
+        const iso = formatIndoToISO(indoDateStr);
+        if (!iso) return true;
+        if (startISO && iso < startISO) return false;
+        if (endISO && iso > endISO) return false;
+        return true;
+      };
+
+      // Filter data BOOKING (hanya yang statusnya confirmed/completed dari sheet BOOKING)
+      const validBookings = (bookingDataState.bookings || []).filter(b => {
+        const isConfirmed = (b.Status_Booking || '').toLowerCase() === 'confirmed' || (b.Status_Booking || '').toLowerCase() === '';
+        return isConfirmed && filterByDate(b.Cek_In);
+      });
+
+      // KPI Calculations
+      const totalPendapatan = validBookings.reduce((sum, b) => sum + (Number(b.Dibayar) || Number(b.Harga) || 0), 0);
+      const totalMalam = validBookings.reduce((sum, b) => sum + (Number(b.Malam) || 1), 0);
+      const totalBookingCount = validBookings.length;
+      const totalDewasa = validBookings.reduce((sum, b) => sum + (Number(b.Dewasa) || 0), 0);
+      const totalAnak = validBookings.reduce((sum, b) => sum + (Number(b.Anak) || 0), 0);
+      const totalPax = totalDewasa + totalAnak;
+
+      document.getElementById('kpi-bk-pendapatan').textContent = formatRupiah(totalPendapatan);
+      document.getElementById('kpi-bk-malam').textContent = `${totalMalam} Malam`;
+      document.getElementById('kpi-bk-total').textContent = `${totalBookingCount} Booking`;
+      document.getElementById('kpi-bk-pax').textContent = `${totalPax} Pax`;
+      document.getElementById('kpi-bk-pax-split').textContent = `Dewasa: ${totalDewasa} • Anak: ${totalAnak}`;
+
+      // GRAFIK 1: Perbandingan Pendapatan Tiap Bulan (Bar Chart dari sheet BOOKING)
+      const monthlyMap = {};
+      validBookings.forEach(b => {
+        const iso = formatIndoToISO(b.Cek_In);
+        if (iso) {
+          const monthKey = iso.slice(0, 7); // Format YYYY-MM
+          monthlyMap[monthKey] = (monthlyMap[monthKey] || 0) + (Number(b.Dibayar) || Number(b.Harga) || 0);
+        }
+      });
+
+      const sortedMonths = Object.keys(monthlyMap).sort();
+      const monthNames = { '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'Mei', '06': 'Jun', '07': 'Jul', '08': 'Ags', '09': 'Sep', '10': 'Okt', '11': 'Nov', '12': 'Des' };
+      const monthlyLabels = sortedMonths.map(m => {
+        const [y, mm] = m.split('-');
+        return `${monthNames[mm] || mm} ${y}`;
+      });
+      const monthlyData = sortedMonths.map(m => monthlyMap[m]);
+
+      const ctxBkMonthly = document.getElementById('chart-booking-monthly').getContext('2d');
+      if (chartBkMonthly) chartBkMonthly.destroy();
+      chartBkMonthly = new Chart(ctxBkMonthly, {
+        type: 'bar',
+        data: {
+          labels: monthlyLabels.length ? monthlyLabels : ['Belum ada data'],
+          datasets: [{
+            label: 'Pendapatan Booking (Rp)',
+            data: monthlyData.length ? monthlyData : [0],
+            backgroundColor: '#15370D',
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // GRAFIK 2: Perbandingan Type Glamping (Donut Chart dengan Warna Berbeda)
+      const typeMap = {};
+      validBookings.forEach(b => {
+        const glampingType = b.Glamping || 'Lainnya';
+        typeMap[glampingType] = (typeMap[glampingType] || 0) + 1;
+      });
+
+      const typeLabels = Object.keys(typeMap);
+      const typeValues = Object.values(typeMap);
+      const distinctColors = ['#15370D', '#728E6D', '#E5CD82', '#3d5e35', '#d4b459', '#2c5223', '#a3b18a', '#8d99ae'];
+
+      const ctxBkDonut = document.getElementById('chart-booking-glamping-donut').getContext('2d');
+      if (chartBkGlampingDonut) chartBkGlampingDonut.destroy();
+      chartBkGlampingDonut = new Chart(ctxBkDonut, {
+        type: 'doughnut',
+        data: {
+          labels: typeLabels.length ? typeLabels : ['Belum ada data'],
+          datasets: [{
+            data: typeValues.length ? typeValues : [1],
+            backgroundColor: distinctColors.slice(0, typeLabels.length || 1),
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '65%',
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+        }
+      });
+
+      // Summary Pills untuk Tipe Glamping
+      document.getElementById('booking-type-summary-pills').innerHTML = Object.entries(typeMap).map(([k, v]) => `
+        <span class="px-2.5 py-1 rounded-lg bg-[#F4F6F2] text-[#15370D] font-bold border border-[#728E6D]/30">${k}: ${v} Booking</span>
+      `).join('');
+    }
+
+    // =========================================================================
+    // SWITCHING SUB TAB KALENDER
+    // =========================================================================
+    function switchCalendarSubTab(subTab) {
+      const glampingEl = document.getElementById('calendar-subtab-glamping');
+      const tripEl = document.getElementById('calendar-subtab-trip');
+      const btnGlamping = document.getElementById('subtab-btn-cal-glamping');
+      const btnTrip = document.getElementById('subtab-btn-cal-trip');
+
+      if (subTab === 'glamping') {
+        glampingEl.classList.remove('hidden');
+        tripEl.classList.add('hidden');
+        btnGlamping.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow";
+        btnTrip.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
+        renderGlampingCalendarView();
+      } else {
+        glampingEl.classList.add('hidden');
+        tripEl.classList.remove('hidden');
+        btnTrip.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-[#15370D] text-[#E5CD82] shadow";
+        btnGlamping.className = "px-5 py-2.5 rounded-2xl text-xs font-extrabold transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
+        renderCalendarView();
+      }
+    }
+
+    // =========================================================================
+    // STATE & LOGIKA KALENDER GLAMPING TAHURA (DARI SHEET BOOKING)
+    // =========================================================================
+    let glampingCalendarCurrentDate = new Date();
+
+    function changeGlampingCalendarMonth(offset) {
+      glampingCalendarCurrentDate.setMonth(glampingCalendarCurrentDate.getMonth() + offset);
+      renderGlampingCalendarView();
+    }
+
+    function resetGlampingCalendarMonth() {
+      glampingCalendarCurrentDate = new Date();
+      renderGlampingCalendarView();
+    }
+
+    // Palet warna khusus untuk tipe glamping agar berbeda dan selaras dengan tema
+    const DISTINCT_GLAMPING_COLORS = [
+      'bg-[#15370D] text-[#E5CD82]',    // 1. Hijau Tua Tahura - Emas
+      'bg-amber-600 text-white',         // 2. Amber / Oranye Hangat
+      'bg-sky-700 text-white',           // 3. Biru Langit Gelap
+      'bg-rose-700 text-white',          // 4. Merah Marun / Rose
+      'bg-purple-700 text-white',        // 5. Ungu Gelap
+      'bg-teal-700 text-white',          // 6. Teal / Hijau Kebiruan
+      'bg-[#E5CD82] text-[#15370D]',     // 7. Emas Tahura - Hijau Tua
+      'bg-indigo-700 text-white',        // 8. Indigo
+      'bg-orange-700 text-white',        // 9. Oranye Bata
+      'bg-emerald-700 text-white'        // 10. Emerald
+    ];
+
+    let assignedGlampingColorMap = {};
+
+    // Membangun pemetaan warna unik untuk semua tipe glamping yang ada di database
+    function buildGlampingColorMap() {
+      const typesSet = new Set();
+      (bookingDataState.units || []).forEach(u => {
+        if (u && u.name) typesSet.add(u.name.trim());
+      });
+      (bookingDataState.bookings || []).forEach(b => {
+        if (b && b.Glamping) typesSet.add(b.Glamping.trim());
+      });
+
+      const sortedTypes = Array.from(typesSet).sort();
+      assignedGlampingColorMap = {};
+
+      sortedTypes.forEach((typeName, index) => {
+        assignedGlampingColorMap[typeName] = DISTINCT_GLAMPING_COLORS[index % DISTINCT_GLAMPING_COLORS.length];
+      });
+    }
+
+    function getGlampingBadgeClass(glampingName) {
+      if (!glampingName) return 'bg-slate-600 text-white';
+      const cleanName = glampingName.trim();
+
+      // Jika belum dipetakan, bangun ulang map warna
+      if (!assignedGlampingColorMap[cleanName]) {
+        buildGlampingColorMap();
+      }
+
+      return assignedGlampingColorMap[cleanName] || 'bg-[#728E6D] text-white';
+    }
+
+    function renderGlampingCalendarView() {
+      const container = document.getElementById('calendar-glamping-container');
+      if (!container) return;
+
+      // Pastikan warna tiap tipe glamping dipetakan terlebih dahulu sebelum render
+      buildGlampingColorMap();
+      container.innerHTML = '';
+
+      // Render 2 Bulan berdampingan
+      for (let i = 0; i < 2; i++) {
+        const targetDate = new Date(glampingCalendarCurrentDate.getFullYear(), glampingCalendarCurrentDate.getMonth() + i, 1);
+        container.appendChild(createGlampingMonthCalendarElement(targetDate));
+      }
+
+      renderGlampingLegend();
+    }
+
+    function createGlampingMonthCalendarElement(dateObj) {
+      const year = dateObj.getFullYear();
+      const month = dateObj.getMonth();
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-3xl p-5 shadow-md border border-[#728E6D]/20';
+
+      let html = `
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+          <h3 class="font-extrabold text-base text-[#15370D]">${monthNames[month]} ${year}</h3>
+          <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#15370D] text-[#E5CD82]">Glamping Tahura</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400 mb-2">
+          <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1.5">
+      `;
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+      const todayISO = new Date().toISOString().split('T')[0];
+
+      // Kotak kosong sebelum tanggal 1
+      for (let i = 0; i < firstDayIndex; i++) {
+        html += `<div class="h-20 rounded-2xl bg-slate-50/50 border border-transparent"></div>`;
+      }
+
+      // Loop tanggal dalam bulan
+      for (let d = 1; d <= totalDays; d++) {
+        const dayStr = String(d).padStart(2, '0');
+        const monthStr = String(month + 1).padStart(2, '0');
+        const isoDate = `${year}-${monthStr}-${dayStr}`;
+
+        // Cari booking dari bookingDataState.bookings yang mencakup tanggal ini
+        const bookingsOnThisDay = (bookingDataState.bookings || []).filter(b => {
+          if (!b || (b.Status_Booking || '').toLowerCase() === 'cancelled') return false;
+          const inIso = formatIndoToISO(b.Cek_In);
+          const outIso = formatIndoToISO(b.Cek_Out);
+          if (!inIso || !outIso) return false;
+          return isoDate >= inIso && isoDate < outIso;
+        });
+
+        const isToday = isoDate === todayISO;
+        const hasBooking = bookingsOnThisDay.length > 0;
+
+        let cellBg = isToday ? 'bg-[#E5CD82]/20 border-[#E5CD82]' : 'bg-white border-slate-200/70 hover:border-[#728E6D]';
+        
+        html += `<div class="h-24 rounded-2xl p-1.5 border ${cellBg} flex flex-col justify-between overflow-hidden transition relative">`;
+        html += `<div class="flex items-center justify-between"><span class="text-xs font-bold ${isToday ? 'text-[#15370D] bg-[#E5CD82] px-1.5 py-0.2 rounded-md' : 'text-slate-700'}">${d}</span>`;
+        if (hasBooking) {
+          html += `<span class="w-2 h-2 rounded-full bg-[#15370D] animate-pulse" title="${bookingsOnThisDay.length} Booking"></span>`;
+        }
+        html += `</div>`;
+
+        // Kotak nama pemesan & tipe glamping dengan warna berbeda tiap tipe
+        html += `<div class="flex-1 overflow-y-auto space-y-1 mt-1 no-scrollbar">`;
+        bookingsOnThisDay.forEach(b => {
+          const badgeClass = getGlampingBadgeClass(b.Glamping);
+          html += `
+            <button onclick="openBookingSlideOver('${b.Booking_ID}')" class="w-full text-left px-1.5 py-1 rounded-lg ${badgeClass} hover:brightness-110 text-[9px] font-extrabold truncate shadow-xs block" title="${b.Nama_Lengkap} (${b.Glamping})">
+              ${b.Nama_Lengkap} (${b.Glamping})
+            </button>
+          `;
+        });
+        html += `</div>`;
+
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      card.innerHTML = html;
+      return card;
+    }
+
+    function renderGlampingLegend() {
+      const legendEl = document.getElementById('calendar-glamping-legend');
+      if (!legendEl) return;
+
+      const types = Object.keys(assignedGlampingColorMap);
+      if (types.length === 0) {
+        legendEl.innerHTML = `<span class="text-xs text-slate-400">Belum ada data tipe glamping.</span>`;
+        return;
+      }
+
+      legendEl.innerHTML = types.map(t => {
+        const badgeClass = getGlampingBadgeClass(t);
+        return `
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs">
+            <span class="w-3.5 h-3.5 rounded-md ${badgeClass} inline-block shrink-0"></span>
+            <span class="font-bold text-slate-700">${t}</span>
+          </div>
+        `;
+      }).join('');
+    }
   </script>
+
 </body>
 </html>
